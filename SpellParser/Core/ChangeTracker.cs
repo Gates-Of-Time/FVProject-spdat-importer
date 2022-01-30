@@ -71,7 +71,7 @@ namespace SpellParser.Core
 
         public string SQL {
             get {
-                var sql = $@"--{Name}
+                var sql = $@"-- {Name}
 UPDATE spells_new SET
 {string.Join("\n,", Changes.Select(x => $"{x.Name} = {GetSqlValue(x.Name, x.NewValue)}"))}
 WHERE id = {Id}";                
@@ -83,7 +83,7 @@ WHERE id = {Id}";
         {
             get
             {
-                var sql = $@"--{Name}
+                var sql = $@"-- {Name}
 UPDATE spells_new SET
 {string.Join("\n,", Changes.Select(x => $"{x.Name} = {GetSqlValue(x.Name, x.OldValue)}"))}
 WHERE id = {Id}";
