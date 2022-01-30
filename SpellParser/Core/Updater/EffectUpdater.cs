@@ -261,7 +261,7 @@ namespace SpellParser.Core.Updater
                 case "Movement":
                     return "3";
                 case "Negate if Combat":
-                    return "";
+                    return "94";
                 case "Poison Resist":
                     return "48";
                 case "Poison":
