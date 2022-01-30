@@ -12,7 +12,7 @@ namespace SpellParser.Infrastructure.Data
 
         public IEnumerable<EQCasterSpell> GetAll()
         {
-            var values = File.ReadAllLines(@"..\..\..\..\DataFiles\exports\spdat.2000.04.18.txt")
+            var values = File.ReadAllLines(@"..\..\..\..\DataFiles\exports\spdat.2000.04.18-original.txt")
                                        .Skip(1)
                                        .Select(v => Parse(v))
                                        .Where(s => s.Attrib_1.Contains("Teleport") == false)
