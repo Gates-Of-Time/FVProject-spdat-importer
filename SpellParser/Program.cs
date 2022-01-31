@@ -12,6 +12,7 @@ namespace SpellParser
         private static void Main(string[] args)
         {
             Console.WriteLine("Hello Everquest!");
+            Console.WriteLine("");
 
             var eqCasterSpellsRepository = new EQCasterSpellRepository();
             var eqCasterSpells = eqCasterSpellsRepository.GetClassicSpells();
@@ -75,10 +76,15 @@ namespace SpellParser
 
                         }).ToArray();
 
-            var errors = eqCasterSpells.Where(x => x.IsClassic).Select(x => x.Spell_Name.ToLower()).Except(peqSpells.Select(x => x.name.ToLower()));
+            var errors = eqCasterSpells.Select(x => x.Spell_Name.ToLower()).Except(peqSpells.Select(x => x.name.ToLower()));
             var errorsCount = errors.Count();
             var names = string.Join("\n", errors);
+
+            if (errorsCount < 1) return;
+
+            Console.WriteLine($"Missing spell names in PEQ <{errorsCount}>");
             Console.WriteLine(names);
+            Console.WriteLine("");
         }
 
         private static void CheckDoubles(IEnumerable<EQCasterSpell> eqCasterSpells)
@@ -100,8 +106,13 @@ namespace SpellParser
 
             var doubles = updateSpells.Where(x => x.PEQSpellUpdater.Count() > 1);
             var doublesCount = doubles.Count();
-            var names = string.Join("\n", doubles.SelectMany(x => x.PEQSpellUpdater.Select(y => $"{y.PEQSpell.id} - {y.PEQSpell.name}")));
+            var names = string.Join("\n", doubles.Select(x => $"{x.EQCasterSpell.Spell_Name} [ {string.Join(", ", x.PEQSpellUpdater.Select(y => y.PEQSpell.id))} ]"));
+
+            if (doublesCount < 1) return;
+
+            Console.WriteLine($"Multiple PEQ spell name mappings <{doublesCount}>");
             Console.WriteLine(names);
+            Console.WriteLine("");
         }
     }
 }
