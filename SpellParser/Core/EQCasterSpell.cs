@@ -72,32 +72,25 @@ namespace SpellParser.Core
         public string Back_Range { get; set; }
         public string Up_Range { get; set; }
 
-        public bool IsPCSpell => HasValidSkill
-            && HasValidSpellName
-            && IsMaxLevel(60)
-            ;
+        //public bool MatchPCLevels(PEQSpell peqSpell) {
+        //    return WAR == peqSpell.WAR
+        //        && CLR == peqSpell.CLR
+        //        && PAL == peqSpell.PAL
+        //        && RNG == peqSpell.RNG
+        //        && SHD == peqSpell.SHD
+        //        && DRU == peqSpell.DRU
+        //        && MNK == peqSpell.MNK
+        //        && BRD == peqSpell.BRD
+        //        && ROG == peqSpell.ROG
+        //        && SHM == peqSpell.SHM
+        //        && NEC == peqSpell.NEC
+        //        && WIZ == peqSpell.WIZ
+        //        && MAG == peqSpell.MAG
+        //        && ENC == peqSpell.ENC
+        //        ;
+        //}
 
-        public bool IsClassic => HasValidSkill
-            && HasValidSpellName
-            && IsMaxLevel(50)
-            ;
-
-        public bool IsKunark => HasValidSkill
-            && HasValidSpellName
-            && IsMaxLevel(60)
-            ;
-
-        public bool IsVelious => HasValidSkill
-            && HasValidSpellName
-            && IsMaxLevel(60)
-            ;
-
-        private bool HasValidSpellName => Spell_Name.EndsWith("Fear2") == false
-            && Spell_Name != "Gift of";
-
-        private bool HasValidSkill => Skill != "Instantaneous";
-
-        private bool IsMaxLevel(int minLevel)
+        public bool IsMaxLevel(int minLevel)
         {
             return IsMaxLevel(WAR, minLevel)
                 || IsMaxLevel(CLR, minLevel)
@@ -115,7 +108,7 @@ namespace SpellParser.Core
                 || IsMaxLevel(ENC, minLevel);
         }
 
-        private bool IsMaxLevel(string classLevel, int minLevel)
+        private static bool IsMaxLevel(string classLevel, int minLevel)
         {
             return string.IsNullOrWhiteSpace(classLevel) == false && Convert.ToInt32(classLevel) <= minLevel;
         }

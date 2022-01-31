@@ -14,8 +14,10 @@ namespace SpellParser.Infrastructure.Data
             var values = File.ReadAllLines(@"..\..\..\..\DataFiles\exports\spdat.2000.04.18-original.txt")
                                        .Skip(1)
                                        .Select(v => Parse(v))
-                                       .Where(s => s.Attrib_1.Contains("Teleport") == false)
-                                       .Where(s => s.IsClassic)
+                                       .Where(HasValidSpellName)
+                                       .Where(HasValidSkill)
+                                       .Where(HasValidAttrib1)
+                                       .Where(IsClassic)
                                        .ToArray();
 
             return values;
@@ -27,8 +29,10 @@ namespace SpellParser.Infrastructure.Data
             var values = File.ReadAllLines(@"..\..\..\..\DataFiles\exports\spdat.2000.11.30-kunark.txt")
                                        .Skip(1)
                                        .Select(v => Parse(v))
-                                       .Where(s => s.Attrib_1.Contains("Teleport") == false)
-                                       .Where(s => s.IsKunark)
+                                       .Where(HasValidSpellName)
+                                       .Where(HasValidSkill)
+                                       .Where(HasValidAttrib1)
+                                       .Where(IsKunark)
                                        .ToArray();
 
             return values;
@@ -40,13 +44,22 @@ namespace SpellParser.Infrastructure.Data
             var values = File.ReadAllLines(@"..\..\..\..\DataFiles\exports\spdat.2001.08.22-velious.txt")
                                        .Skip(1)
                                        .Select(v => Parse(v))
-                                       .Where(s => s.Attrib_1.Contains("Teleport") == false)
-                                       .Where(s => s.IsVelious)
+                                       .Where(HasValidSpellName)
+                                       .Where(HasValidSkill)
+                                       .Where(HasValidAttrib1)
+                                       .Where(IsVelious)
                                        .ToArray();
 
             return values;
 
         }
+
+        static Func<EQCasterSpell, bool> HasValidSpellName = x => x.Spell_Name.EndsWith("Fear2") == false && x.Spell_Name != "Gift of";
+        static Func<EQCasterSpell, bool> HasValidSkill = x => x.Skill != "Instantaneous";
+        static Func<EQCasterSpell, bool> HasValidAttrib1 = x => x.Attrib_1.Contains("Teleport") == false;
+        static Func<EQCasterSpell, bool> IsClassic = x => x.IsMaxLevel(50);
+        static Func<EQCasterSpell, bool> IsKunark = x => x.IsMaxLevel(60);
+        static Func<EQCasterSpell, bool> IsVelious = x => x.IsMaxLevel(60);
 
         static EQCasterSpell Parse(string line)
         {
