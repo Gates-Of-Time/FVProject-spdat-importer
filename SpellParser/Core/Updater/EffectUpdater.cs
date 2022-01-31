@@ -62,7 +62,7 @@ namespace SpellParser.Core.Updater
             var eqCasterMaxValue = $"{EQCasterMaxValue.GetValue(eqCasterSpell)}";
             var eqCasterForumla = $"{EQCasterForumla.GetValue(eqCasterSpell)}";
 
-            if (peqEffectId == SE_SummonCorpse || peqSpell.spell_category == SummonCorpse) Array.Empty<Change>();
+            if (peqEffectId == SE_SummonCorpse || peqSpell.spell_category == SummonCorpse) return Array.Empty<Change>();
 
             string effectId = peqEffectId == SE_Mez ? peqEffectId : AttribConverter(eqCasterEffectId, eqCasterBaseValue);
             if (peqEffectId != effectId)

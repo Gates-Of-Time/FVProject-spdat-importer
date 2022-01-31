@@ -44,7 +44,7 @@ namespace SpellParser.Core.Updater
             var peqMaxValue = $"{PEQMaxValue.GetValue(peqSpell)}";
             var peqForumla = $"{PEQForumla.GetValue(peqSpell)}";
 
-            if (peqEffectId == SE_SummonCorpse || peqEffectId == SE_StackingCommand_Block || peqSpell.spell_category == SummonCorpse) Array.Empty<Change>();
+            if (peqEffectId == SE_SummonCorpse || peqEffectId == SE_StackingCommand_Block || peqSpell.spell_category == SummonCorpse) return Array.Empty<Change>();
 
             var changes = new List<Change>();
             if (peqEffectId != "254")
