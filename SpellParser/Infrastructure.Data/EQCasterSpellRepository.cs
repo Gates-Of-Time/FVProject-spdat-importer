@@ -9,7 +9,6 @@ namespace SpellParser.Infrastructure.Data
 {
     public class EQCasterSpellRepository
     {
-
         public IEnumerable<EQCasterSpell> GetAll()
         {
             var values = File.ReadAllLines(@"..\..\..\..\DataFiles\exports\spdat.2000.04.18-original.txt")

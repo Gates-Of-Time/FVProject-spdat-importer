@@ -12,14 +12,15 @@ namespace SpellParser
         private static void Main(string[] args)
         {
             Console.WriteLine("Hello Everquest!");
-            //CheckSpellNames();
+            CheckSpellNames();
+            CheckDoubles();
             UpdateSpells();
         }
 
         private static void UpdateSpells()
         {
-            var rof2SpellsRepository = new PEQSpellRepository();
-            var rof2Spells = rof2SpellsRepository.GetAll();
+            var peqSpellsRepository = new PEQSpellRepository();
+            var peqSpells = peqSpellsRepository.GetAll();
 
             var eqCasterSpellsRepository = new EQCasterSpellRepository();
             var eqcaster = eqCasterSpellsRepository.GetAll();
@@ -32,35 +33,35 @@ namespace SpellParser
                 , new EffectUpdater(2)
                 , new EffectUpdater(3)
                 , new EffectUpdater(4)
-                , new EffectResettUpdater(5)
-                , new EffectResettUpdater(6)
-                , new EffectResettUpdater(7)
-                , new EffectResettUpdater(8)
+                , new EffectResetUpdater(5)
+                , new EffectResetUpdater(6)
+                , new EffectResetUpdater(7)
+                , new EffectResetUpdater(8)
             };
 
-            var rof2SpellUpdaters = rof2Spells.Select(x => SpellUpdater.From(x, updaters)).ToArray();
-            var classicSpells = eqcaster.Where(x => x.IsClassic)
+            var peqSpellUpdaters = peqSpells.Select(x => SpellUpdater.From(x, updaters)).ToArray();
+            var classicSpells = eqcaster.Where(x => x.IsVelious)
                         .Select(x => new
                         {
                             EQCasterSpell = x,
-                            RoF2SpellUpdater = rof2SpellUpdaters.Where(y => x.Spell_Name.ToLower() == y.RoF2Spell.name.ToLower()).ToArray()
+                            PEQSpellUpdater = peqSpellUpdaters.Where(y => x.Spell_Name.ToLower() == y.PEQSpell.name.ToLower()).ToArray()
 
                         }).ToArray();
             
-            foreach (var item in classicSpells.Where(x => x.RoF2SpellUpdater.Count() == 1))
+            foreach (var item in classicSpells.Where(x => x.PEQSpellUpdater.Count() == 1))
             {
-                item.RoF2SpellUpdater.First().UpdateFrom(item.EQCasterSpell);
+                item.PEQSpellUpdater.First().UpdateFrom(item.EQCasterSpell);
             }
 
-            var updates = classicSpells.SelectMany(x => x.RoF2SpellUpdater).Where(x => x.ChangeTracker.Changes.Any());
+            var updates = classicSpells.SelectMany(x => x.PEQSpellUpdater).Where(x => x.ChangeTracker.Changes.Any());
             var updatesCount = updates.Count();
             OutputWriter.WriteToDisk(updates);
         }
 
         private static void CheckSpellNames()
         {
-            var rof2SpellsRepository = new PEQSpellRepository();
-            var rof2Spells = rof2SpellsRepository.GetAll();
+            var peqSpellsRepository = new PEQSpellRepository();
+            var peqSpells = peqSpellsRepository.GetAll();
 
             var eqCasterSpellsRepository = new EQCasterSpellRepository();
             var eqcaster = eqCasterSpellsRepository.GetAll();
@@ -69,24 +70,25 @@ namespace SpellParser
                 new NameUpdater()
             };
 
-            var rof2SpellUpdaters = rof2Spells.Select(x => SpellUpdater.From(x, updaters)).ToArray();
-            var classicSpells = eqcaster.Where(x => x.IsClassic)
+            var peqSpellUpdaters = peqSpells.Select(x => SpellUpdater.From(x, updaters)).ToArray();
+            var classicSpells = eqcaster.Where(x => x.IsVelious)
                         .Select(x => new
                         {
                             EQCasterSpell = x,
-                            RoF2SpellUpdater = rof2SpellUpdaters.Where(y => x.Spell_Name.ToLower() == y.RoF2Spell.name.ToLower()).ToArray()
+                            PEQSpellUpdater = peqSpellUpdaters.Where(y => x.Spell_Name.ToLower() == y.PEQSpell.name.ToLower()).ToArray()
 
                         }).ToArray();
 
-            var errors = eqcaster.Where(x => x.IsClassic).Select(x => x.Spell_Name.ToLower()).Except(rof2Spells.Select(x => x.name.ToLower()));
+            var errors = eqcaster.Where(x => x.IsClassic).Select(x => x.Spell_Name.ToLower()).Except(peqSpells.Select(x => x.name.ToLower()));
             var errorsCount = errors.Count();
             var names = string.Join("\n", errors);
+            Console.WriteLine(names);
         }
 
         private static void CheckDoubles()
         {
-            var rof2SpellsRepository = new PEQSpellRepository();
-            var rof2Spells = rof2SpellsRepository.GetAll();
+            var peqSpellsRepository = new PEQSpellRepository();
+            var peqSpells = peqSpellsRepository.GetAll();
 
             var eqCasterSpellsRepository = new EQCasterSpellRepository();
             var eqcaster = eqCasterSpellsRepository.GetAll();
@@ -95,18 +97,19 @@ namespace SpellParser
                 new NameUpdater()
             };
 
-            var rof2SpellUpdaters = rof2Spells.Select(x => SpellUpdater.From(x, updaters)).ToArray();
-            var classicSpells = eqcaster.Where(x => x.IsClassic)
+            var peqSpellUpdaters = peqSpells.Select(x => SpellUpdater.From(x, updaters)).ToArray();
+            var classicSpells = eqcaster.Where(x => x.IsVelious)
                         .Select(x => new
                         {
                             EQCasterSpell = x,
-                            RoF2SpellUpdater = rof2SpellUpdaters.Where(y => x.Spell_Name.ToLower() == y.RoF2Spell.name.ToLower()).ToArray()
+                            PEQSpellUpdater = peqSpellUpdaters.Where(y => x.Spell_Name.ToLower() == y.PEQSpell.name.ToLower()).ToArray()
 
                         }).ToArray();
 
-            var doubles = classicSpells.Where(x => x.RoF2SpellUpdater.Count() > 1);
+            var doubles = classicSpells.Where(x => x.PEQSpellUpdater.Count() > 1);
             var doublesCount = doubles.Count();
-            var names = string.Join("\n", doubles.SelectMany(x => x.RoF2SpellUpdater.Select(y => $"{y.RoF2Spell.id} - {y.RoF2Spell.name}")));
+            var names = string.Join("\n", doubles.SelectMany(x => x.PEQSpellUpdater.Select(y => $"{y.PEQSpell.id} - {y.PEQSpell.name}")));
+            Console.WriteLine(names);
         }
     }
 }

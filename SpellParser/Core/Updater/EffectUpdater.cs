@@ -7,15 +7,22 @@ namespace SpellParser.Core.Updater
 {
     internal class EffectUpdater : ISpellPropertyUpdater
     {
+        // Effect Ids
+        public const string SE_Mez = "31";
+        public const string SE_SummonCorpse = "91";
+
+        // Category Ids (groups)
+        public const string SummonCorpse = "52";
+
         public EffectUpdater(int effectNumber)
         {
             EffectNumber = effectNumber;
 
             var rof2Spell = new PEQSpell();
-            PEQEffectId = rof2Spell.GetType().GetProperty($"effectid{EffectNumber}", BindingFlags.Public | BindingFlags.Instance);
-            PEQBaseValue = rof2Spell.GetType().GetProperty($"effect_base_value{EffectNumber}", BindingFlags.Public | BindingFlags.Instance);
-            PEQMaxValue = rof2Spell.GetType().GetProperty($"max{EffectNumber}", BindingFlags.Public | BindingFlags.Instance);
-            PEQForumla = rof2Spell.GetType().GetProperty($"formula{EffectNumber}", BindingFlags.Public | BindingFlags.Instance);
+            PEQEffectId = rof2Spell.GetType().GetProperty(PEQEffectIdColumnName, BindingFlags.Public | BindingFlags.Instance);
+            PEQBaseValue = rof2Spell.GetType().GetProperty(PEQBaseValueColumnName, BindingFlags.Public | BindingFlags.Instance);
+            PEQMaxValue = rof2Spell.GetType().GetProperty(PEQMaxValueColumnName, BindingFlags.Public | BindingFlags.Instance);
+            PEQForumla = rof2Spell.GetType().GetProperty(PEQForumlaColumnName, BindingFlags.Public | BindingFlags.Instance);
 
 
 
@@ -36,43 +43,47 @@ namespace SpellParser.Core.Updater
         private PropertyInfo EQCasterForumla { get; }
         private int EffectNumber { get; }
 
-        public IEnumerable<Change> UpdateFrom(PEQSpell rof2Spell, EQCasterSpell eQCaster)
+        private string PEQEffectIdColumnName => $"{nameof(PEQSpell.effectid1).Remove(nameof(PEQSpell.effectid1).Length - 1)}{EffectNumber}";
+        private string PEQBaseValueColumnName => $"{nameof(PEQSpell.effect_base_value1).Remove(nameof(PEQSpell.effect_base_value1).Length - 1)}{EffectNumber}";
+        private string PEQMaxValueColumnName => $"{nameof(PEQSpell.max1).Remove(nameof(PEQSpell.max1).Length - 1)}{EffectNumber}";
+        private string PEQForumlaColumnName => $"{nameof(PEQSpell.formula1).Remove(nameof(PEQSpell.formula1).Length - 1)}{EffectNumber}";
+
+        public IEnumerable<Change> UpdateFrom(PEQSpell peqSpell, EQCasterSpell eqCasterSpell)
         {
-            if (rof2Spell.effectid1 == "91" || rof2Spell.spell_category == "52") Array.Empty<Change>();
-
             var changes = new List<Change>();
-            var peqEffectId = $"{PEQEffectId.GetValue(rof2Spell)}";
-            var peqBaseValue = $"{PEQBaseValue.GetValue(rof2Spell)}";
-            var peqMaxValue = $"{PEQMaxValue.GetValue(rof2Spell)}";
-            var peqForumla = $"{PEQForumla.GetValue(rof2Spell)}";
+            var peqEffectId = $"{PEQEffectId.GetValue(peqSpell)}";
+            var peqBaseValue = $"{PEQBaseValue.GetValue(peqSpell)}";
+            var peqMaxValue = $"{PEQMaxValue.GetValue(peqSpell)}";
+            var peqForumla = $"{PEQForumla.GetValue(peqSpell)}";
 
 
-            var eqCasterEffectId = $"{EQCasterEffectId.GetValue(eQCaster)}";
-            var eqCasterBaseValue = $"{EQCasterBaseValue.GetValue(eQCaster)}";
-            var eqCasterMaxValue = $"{EQCasterMaxValue.GetValue(eQCaster)}";
-            var eqCasterForumla = $"{EQCasterForumla.GetValue(eQCaster)}";
+            var eqCasterEffectId = $"{EQCasterEffectId.GetValue(eqCasterSpell)}";
+            var eqCasterBaseValue = $"{EQCasterBaseValue.GetValue(eqCasterSpell)}";
+            var eqCasterMaxValue = $"{EQCasterMaxValue.GetValue(eqCasterSpell)}";
+            var eqCasterForumla = $"{EQCasterForumla.GetValue(eqCasterSpell)}";
 
+            if (peqEffectId == SE_SummonCorpse || peqSpell.spell_category == SummonCorpse) Array.Empty<Change>();
 
-            string effectId = AttribConverter(eqCasterEffectId);
+            string effectId = peqEffectId == SE_Mez ? peqEffectId : AttribConverter(eqCasterEffectId, eqCasterBaseValue);
             if (peqEffectId != effectId)
             {
-                changes.Add(new Change { Name = $"{nameof(PEQSpell.effectid1).Remove(nameof(PEQSpell.effectid1).Length - 1)}{EffectNumber}", OldValue = peqEffectId, NewValue = effectId });
+                changes.Add(new Change { Name = PEQEffectIdColumnName, OldValue = peqEffectId, NewValue = effectId });
             }
 
             if (eqCasterBaseValue != "" && peqBaseValue != eqCasterBaseValue)
             {
-                changes.Add(new Change { Name = $"{nameof(PEQSpell.effect_base_value2).Remove(nameof(PEQSpell.effect_base_value2).Length - 1)}{EffectNumber}", OldValue = peqBaseValue, NewValue = eqCasterBaseValue });
+                changes.Add(new Change { Name = PEQBaseValueColumnName, OldValue = peqBaseValue, NewValue = eqCasterBaseValue });
             }
 
             if (eqCasterMaxValue != "" && peqMaxValue != eqCasterMaxValue)
             {
-                changes.Add(new Change { Name = $"{nameof(PEQSpell.max2).Remove(nameof(PEQSpell.max2).Length - 1)}{EffectNumber}", OldValue = peqMaxValue, NewValue = eqCasterMaxValue });
+                changes.Add(new Change { Name = PEQMaxValueColumnName, OldValue = peqMaxValue, NewValue = eqCasterMaxValue });
             }
 
             string formula = FormulaConverter(eqCasterForumla);
             if (peqForumla != formula)
             {
-                changes.Add(new Change { Name = $"{nameof(PEQSpell.formula2).Remove(nameof(PEQSpell.formula2).Length - 1)}{EffectNumber}", OldValue = peqForumla, NewValue = formula });
+                changes.Add(new Change { Name = PEQForumlaColumnName, OldValue = peqForumla, NewValue = formula });
             }
 
             if (changes.Any())
@@ -83,6 +94,7 @@ namespace SpellParser.Core.Updater
             return Array.Empty<Change>();
         }
 
+        // PEQ base formula types: https://docs.eqemu.io/server/spells/base-value-formulas/
         private string FormulaConverter(string eqCasterFormula)
         {
             switch (eqCasterFormula)
@@ -158,12 +170,16 @@ namespace SpellParser.Core.Updater
 
                 case "121":
                     return "121";
+
+                case "122":
+                    return "122";
                 default:
                     throw new Exception($"Unable to parse eqcaster forumla <{eqCasterFormula}>");
             }
         }
 
-        private string AttribConverter(string attribute)
+        // PEQ effect ids https://docs.eqemu.io/server/spells/spell-effect-ids/?h=effect+id
+        private string AttribConverter(string attribute, string baseValue)
         {
             switch (attribute)
             {
@@ -187,6 +203,8 @@ namespace SpellParser.Core.Updater
                     return "20";
                 case "Cancel Magic":
                     return "27";
+                case "Change Weather":
+                    return "93";
                 case "Charisma":
                     return "10";
                 case "Charm":
@@ -222,7 +240,7 @@ namespace SpellParser.Core.Updater
                 case "Fire Resist":
                     return "46";
                 case "Frenzy Radius":
-                    return "16";
+                    return "30";
                 case "Gate Home":
                     return "26";
                 case "Group Gate":
@@ -250,6 +268,8 @@ namespace SpellParser.Core.Updater
                     return "77";
                 case "Lower Aggression":
                     return "18";
+                case "Lower Hate":
+                    return "92";
                 case "Lycanthropy":
                     return "44";
                 case "Magic Resist":
@@ -258,8 +278,10 @@ namespace SpellParser.Core.Updater
                     return "87";
                 case "Mana":
                     return "15";
+                case "Mana Drain":
+                    return "98";
                 case "Movement":
-                    return "3";
+                    return baseValue == "-10000" ? "99" : "3";
                 case "Negate if Combat":
                     return "94";
                 case "Poison Resist":
@@ -310,6 +332,8 @@ namespace SpellParser.Core.Updater
                     return "84";
                 case "Total Hit Points":
                     return "69";
+                case "Total Mana":
+                    return "97";
                 case "True North":
                     return "56";
                 case "Ultravision":

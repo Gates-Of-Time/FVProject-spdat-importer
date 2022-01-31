@@ -7,11 +7,11 @@ namespace SpellParser.Core
 {
     public class SpellUpdater
     {
-        private SpellUpdater(PEQSpell rof2Spell, IEnumerable<ISpellPropertyUpdater> updaters)
+        private SpellUpdater(PEQSpell peqSpell, IEnumerable<ISpellPropertyUpdater> updaters)
         {
-            RoF2Spell = rof2Spell ?? throw new ArgumentNullException(nameof(rof2Spell));
+            PEQSpell = peqSpell ?? throw new ArgumentNullException(nameof(peqSpell));
             Updaters = updaters ?? throw new ArgumentNullException(nameof(updaters));
-            ChangeTracker = ChangeTracker.From(rof2Spell);
+            ChangeTracker = ChangeTracker.From(peqSpell);
         }
 
         public static SpellUpdater From(PEQSpell rof2Spell, IEnumerable<ISpellPropertyUpdater> updaters)
@@ -21,14 +21,14 @@ namespace SpellParser.Core
 
         private IEnumerable<ISpellPropertyUpdater> Updaters { get; }
 
-        public PEQSpell RoF2Spell { get; }
+        public PEQSpell PEQSpell { get; }
         public ChangeTracker ChangeTracker { get; }
 
         public void UpdateFrom(EQCasterSpell eQCaster)
         {
             foreach (var updater in Updaters)
             {
-                ChangeTracker.AddChanges(updater.UpdateFrom(RoF2Spell, eQCaster));
+                ChangeTracker.AddChanges(updater.UpdateFrom(PEQSpell, eQCaster));
             }
         }
     }

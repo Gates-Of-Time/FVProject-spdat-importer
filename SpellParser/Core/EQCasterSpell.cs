@@ -82,6 +82,11 @@ namespace SpellParser.Core
             && IsMaxLevel(50)
             ;
 
+        public bool IsVelious => HasValidSkill
+            && HasValidSpellName
+            && IsMaxLevel(60)
+            ;
+
         private bool HasValidSpellName => Spell_Name.EndsWith("Fear2") == false
             && Spell_Name != "Gift of";
 

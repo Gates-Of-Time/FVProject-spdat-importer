@@ -12,7 +12,7 @@ namespace SpellParser.Infrastructure.Data
 
         public IEnumerable<PEQSpell> GetAll()
         {
-            var values = File.ReadAllLines(@"C:\temp\eq\EverquestBots\spells_us.txt")
+            var values = File.ReadAllLines(@"..\..\..\..\DataFiles\exports\spells_us_pre_oiginal.txt")
                                         .Select(v => Parse(v))
                                         .Where(s => string.IsNullOrWhiteSpace(s.name) == false)
                                         .ToArray();
