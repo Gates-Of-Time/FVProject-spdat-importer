@@ -82,6 +82,11 @@ namespace SpellParser.Core
             && IsMaxLevel(50)
             ;
 
+        public bool IsKunark => HasValidSkill
+            && HasValidSpellName
+            && IsMaxLevel(60)
+            ;
+
         public bool IsVelious => HasValidSkill
             && HasValidSpellName
             && IsMaxLevel(60)

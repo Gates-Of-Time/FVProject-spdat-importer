@@ -9,12 +9,39 @@ namespace SpellParser.Infrastructure.Data
 {
     public class EQCasterSpellRepository
     {
-        public IEnumerable<EQCasterSpell> GetAll()
+        public IEnumerable<EQCasterSpell> GetClassicSpells()
         {
             var values = File.ReadAllLines(@"..\..\..\..\DataFiles\exports\spdat.2000.04.18-original.txt")
                                        .Skip(1)
                                        .Select(v => Parse(v))
                                        .Where(s => s.Attrib_1.Contains("Teleport") == false)
+                                       .Where(s => s.IsClassic)
+                                       .ToArray();
+
+            return values;
+
+        }
+
+        public IEnumerable<EQCasterSpell> GetKunarkSpells()
+        {
+            var values = File.ReadAllLines(@"..\..\..\..\DataFiles\exports\spdat.2000.11.30-kunark.txt")
+                                       .Skip(1)
+                                       .Select(v => Parse(v))
+                                       .Where(s => s.Attrib_1.Contains("Teleport") == false)
+                                       .Where(s => s.IsKunark)
+                                       .ToArray();
+
+            return values;
+
+        }
+
+        public IEnumerable<EQCasterSpell> GetVelious()
+        {
+            var values = File.ReadAllLines(@"..\..\..\..\DataFiles\exports\spdat.2001.08.22-velious.txt")
+                                       .Skip(1)
+                                       .Select(v => Parse(v))
+                                       .Where(s => s.Attrib_1.Contains("Teleport") == false)
+                                       .Where(s => s.IsVelious)
                                        .ToArray();
 
             return values;
