@@ -89,6 +89,7 @@ namespace SpellParser.Infrastructure.Data
             { "Wind of Tishania", "Wind of Tishanian" },
             { "O'Keils Radiation", "O`Keils Radiation" },
             { "United Resolve", "Heroic Bond" },
+            { "Track Cropse", "Track Corpse" },
         };
 
         static string[] SpellColumns
