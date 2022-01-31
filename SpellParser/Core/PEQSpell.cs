@@ -1,4 +1,6 @@
-﻿namespace SpellParser.Core
+﻿using System;
+
+namespace SpellParser.Core
 {
     public class PEQSpell
     {
@@ -254,5 +256,31 @@
         public string WIZ => classes2;
         public string MAG => classes4;
         public string ENC => classes5;
+
+        public bool IsPCSpell => ToInt(WAR) < 255
+            && ToInt(CLR) < 255
+            && ToInt(PAL) < 255
+            && ToInt(RNG) < 255
+            && ToInt(SHD) < 255
+            && ToInt(DRU) < 255
+            && ToInt(MNK) < 255
+            && ToInt(BRD) < 255
+            && ToInt(ROG) < 255
+            && ToInt(SHM) < 255
+            && ToInt(NEC) < 255
+            && ToInt(WIZ) < 255
+            && ToInt(MAG) < 255
+            && ToInt(ENC) < 255
+            ;
+
+        private int ToInt(string classLevel)
+        {
+            if (int.TryParse(classLevel, out var level))
+            {
+                return level;
+            }
+
+            return 255;
+        }
     }
 }
