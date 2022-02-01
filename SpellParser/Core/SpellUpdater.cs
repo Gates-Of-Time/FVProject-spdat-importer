@@ -1,7 +1,7 @@
-﻿using SpellParser.Core;
-using SpellParser.Core.Updater;
+﻿using SpellParser.Core.Updater;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SpellParser.Core
 {
@@ -12,6 +12,8 @@ namespace SpellParser.Core
             PEQSpell = peqSpell ?? throw new ArgumentNullException(nameof(peqSpell));
             Updaters = updaters ?? throw new ArgumentNullException(nameof(updaters));
             ChangeTracker = ChangeTracker.From(peqSpell);
+
+            updaters.FirstOrDefault(u => u is NameUpdater)?.UpdateFrom(PEQSpell, null);
         }
 
         public static SpellUpdater From(PEQSpell rof2Spell, IEnumerable<ISpellPropertyUpdater> updaters)
@@ -28,6 +30,8 @@ namespace SpellParser.Core
         {
             foreach (var updater in Updaters)
             {
+                if (updater is NameUpdater) continue;
+
                 ChangeTracker.AddChanges(updater.UpdateFrom(PEQSpell, eQCaster));
             }
         }
