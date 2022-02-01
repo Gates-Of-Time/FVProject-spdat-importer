@@ -8,7 +8,7 @@ namespace SpellParser.Core.Updater
     internal class CastTimersUpdater : ISpellPropertyUpdater
     {
         public IEnumerable<Change> UpdateFrom(PEQSpell rof2Spell, EQCasterSpell eQCaster)
-        { 
+        {
             // skip bard songs
             if (rof2Spell.skill == "12" || rof2Spell.skill == "41" || rof2Spell.skill == "49" || rof2Spell.skill == "54" || rof2Spell.skill == "70")
             {
@@ -34,7 +34,8 @@ namespace SpellParser.Core.Updater
                 changes.Add(new Change { Name = nameof(PEQSpell.recovery_time), OldValue = rof2Spell.recovery_time, NewValue = recoveryTime });
             }
 
-            if (changes.Any()) {
+            if (changes.Any())
+            {
                 return changes;
             }
 

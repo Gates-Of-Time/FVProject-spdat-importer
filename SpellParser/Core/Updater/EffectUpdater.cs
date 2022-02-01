@@ -9,6 +9,7 @@ namespace SpellParser.Core.Updater
     {
         // Effect Ids
         public const string SE_Charm = "22";
+
         public const string SE_Mez = "31";
         public const string SE_Illusion = "58";
         public const string SE_SummonCorpse = "91";
@@ -26,8 +27,6 @@ namespace SpellParser.Core.Updater
             PEQBaseValue = rof2Spell.GetType().GetProperty(PEQBaseValueColumnName, BindingFlags.Public | BindingFlags.Instance);
             PEQMaxValue = rof2Spell.GetType().GetProperty(PEQMaxValueColumnName, BindingFlags.Public | BindingFlags.Instance);
             PEQForumla = rof2Spell.GetType().GetProperty(PEQForumlaColumnName, BindingFlags.Public | BindingFlags.Instance);
-
-
 
             var eqCasterSpell = new EQCasterSpell();
             EQCasterEffectId = eqCasterSpell.GetType().GetProperty($"Attrib_{EffectNumber}", BindingFlags.Public | BindingFlags.Instance);
@@ -59,13 +58,12 @@ namespace SpellParser.Core.Updater
             var peqMaxValue = $"{PEQMaxValue.GetValue(peqSpell)}";
             var peqForumla = $"{PEQForumla.GetValue(peqSpell)}";
 
-
             var eqCasterEffectId = $"{EQCasterEffectId.GetValue(eqCasterSpell)}";
             var eqCasterBaseValue = $"{EQCasterBaseValue.GetValue(eqCasterSpell)}";
             var eqCasterMaxValue = $"{EQCasterMaxValue.GetValue(eqCasterSpell)}";
             var eqCasterForumla = $"{EQCasterForumla.GetValue(eqCasterSpell)}";
 
-            if (peqEffectId == SE_Charm|| peqEffectId == SE_SummonCorpse || peqEffectId == SE_Illusion || peqEffectId == SE_SpellTrigger || peqSpell.spell_category == SummonCorpse) return Array.Empty<Change>();
+            if (peqEffectId == SE_Charm || peqEffectId == SE_SummonCorpse || peqEffectId == SE_Illusion || peqEffectId == SE_SpellTrigger || peqSpell.spell_category == SummonCorpse) return Array.Empty<Change>();
 
             string effectId = peqEffectId == SE_Mez ? peqEffectId : AttribConverter(eqCasterEffectId, eqCasterBaseValue);
             if (peqEffectId != effectId && !(effectId == "254" && peqEffectId == "10"))
@@ -179,6 +177,7 @@ namespace SpellParser.Core.Updater
 
                 case "122":
                     return "122";
+
                 default:
                     throw new Exception($"Unable to parse eqcaster forumla <{eqCasterFormula}>");
             }
@@ -191,175 +190,260 @@ namespace SpellParser.Core.Updater
             {
                 case "":
                     return "254";
+
                 case "Absorb Damage":
                     return "55";
+
                 case "Agility":
                     return "6";
+
                 case "Armor Class (AC)":
                     return "1";
+
                 case "Attack (ATK)":
                     return "2";
+
                 case "Attack Speed":
                     return "11";
+
                 case "Bind Affinity":
                     return "25";
+
                 case "Bind Sight":
                     return "73";
+
                 case "Blinds":
                     return "20";
+
                 case "Cancel Magic":
                     return "27";
+
                 case "Change Weather":
                     return "93";
+
                 case "Charisma":
                     return "10";
+
                 case "Charm":
                     return "22";
+
                 case "Cloak":
                     return "90";
+
                 case "Cold Resist":
                     return "47";
+
                 case "Current Hitpoints":
                     return "79";
+
                 case "Damage Shield":
                     return "59";
+
                 case "Destroy Target":
                     return "41";
+
                 case "Dexterity":
                     return "5";
+
                 case "Disease Resist":
                     return "49";
+
                 case "Disease":
                     return "35";
+
                 case "Divine Aura":
                     return "40";
+
                 case "Evacuate":
                     return "88";
+
                 case "Eye of Zomm":
                     return "87";
+
                 case "Faction":
                     return "19";
+
                 case "Fear":
                     return "23";
+
                 case "Feign Death":
                     return "74";
+
                 case "Fire Resist":
                     return "46";
+
                 case "Frenzy Radius":
                     return "30";
+
                 case "Gate Home":
                     return "26";
+
                 case "Group Gate":
                     return "83";
+
                 case "Hit Points (HP)":
                     return "0";
+
                 case "Identify Item":
                     return "61";
+
                 case "Illusion":
                     return "58";
+
                 case "Infravision":
                     return "65";
+
                 case "Intelligence":
                     return "8";
+
                 case "Invisi/Gate":
                 case "Invisibility":
                     return "12";
+
                 case "Invisible to Animals":
                     return "29";
+
                 case "Invisible to Undead":
                     return "28";
+
                 case "Levitate":
                     return "57";
+
                 case "Locate Corpse":
                     return "77";
+
                 case "Lower Aggression":
                     return "18";
+
                 case "Lower Hate":
                     return "92";
+
                 case "Lycanthropy":
                     return "44";
+
                 case "Magic Resist":
                     return "50";
+
                 case "Magnification":
                     return "87";
+
                 case "Mana":
                     return "15";
+
                 case "Mana Drain":
                     return "98";
+
                 case "Movement":
                     return baseValue == "-10000" ? "99" : "3";
+
                 case "Negate if Combat":
                     return "94";
+
                 case "Poison Resist":
                     return "48";
+
                 case "Poison":
                     return "36";
+
                 case "Reaction Radius":
                     return "86";
+
                 case "Reclaim Mana":
                     return "68";
+
                 case "Resurrection":
                     return "81";
+
                 case "Sacrifice":
                     return "95";
+
                 case "See Invisible":
                     return "254";
+
                 case "See Spell Number":
                     return "85";
+
                 case "Sense Animals":
                     return "54";
+
                 case "Sense Summoned":
                     return "53";
+
                 case "Sense Undead":
                     return "52";
+
                 case "Sentinel":
                     return "76";
+
                 case "Shadow Step":
                     return "42";
+
                 case "Shrinkage":
                     return "89";
+
                 case "Spin Target":
                     return "64";
+
                 case "Stamina Loss":
                     return "24";
+
                 case "Stamina":
                     return "7";
+
                 case "Strength":
                     return "4";
+
                 case "Stun":
                     return "21";
+
                 case "Summon Corpse":
                     return "91";
+
                 case "Summon Item":
                     return "32";
+
                 case "Summon Pet":
                     return "33";
+
                 case "Summon Player":
                     return "82";
+
                 case "Summon Skeleton":
                     return "71";
+
                 case "Throw Into Sky":
                     return "84";
+
                 case "Total Hit Points":
                     return "69";
+
                 case "Total Mana":
                     return "97";
+
                 case "True North":
                     return "56";
+
                 case "Ultravision":
                     return "66";
+
                 case "Voice Graft":
                     return "75";
+
                 case "Water Breathing":
                     return "14";
+
                 case "Wipe Hate List":
                     return "63";
+
                 case "Wisdom":
                     return "9";
+
                 case "Stuns":
                     return "21";
+
                 case "Unknown 4E":
                     return "78";
+
                 default:
                     throw new Exception($"Unable to parse eqcaster attribute <{attribute}>");
             }

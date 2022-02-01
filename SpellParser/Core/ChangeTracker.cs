@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 
 namespace SpellParser.Core
 {
@@ -23,19 +22,20 @@ namespace SpellParser.Core
 
         public static ChangeTracker From(PEQSpell rof2Spell)
         {
-
             return new ChangeTracker(rof2Spell.id, rof2Spell.name);
         }
 
         public string Id { get; }
         public string Name { get; }
-        public IReadOnlyCollection<Change> Changes { get { return InternalChanges.AsReadOnly(); } }
+        public IReadOnlyCollection<Change> Changes
+        { get { return InternalChanges.AsReadOnly(); } }
         private List<Change> InternalChanges { get; } = new List<Change>();
 
         public void AddChange(Change change)
         {
             InternalChanges.Add(change);
         }
+
         public void AddChanges(IEnumerable<Change> changes)
         {
             InternalChanges.AddRange(changes);

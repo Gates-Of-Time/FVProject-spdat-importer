@@ -9,7 +9,7 @@ namespace SpellParser.Infrastructure.Data
 {
     public class PEQSpellRepository
     {
-        const int EqCasterMaxId = 2010;
+        private const int EqCasterMaxId = 2010;
 
         public IEnumerable<PEQSpell> GetAll(IImportOptions options)
         {
@@ -21,7 +21,7 @@ namespace SpellParser.Infrastructure.Data
             return values;
         }
 
-        PEQSpell Parse(string line)
+        private PEQSpell Parse(string line)
         {
             var columns = line.Split('^');
             var obj = new PEQSpell();
@@ -41,7 +41,7 @@ namespace SpellParser.Infrastructure.Data
             return obj;
         }
 
-        static string[] SpellColumns
+        private static string[] SpellColumns
         {
             get
             {

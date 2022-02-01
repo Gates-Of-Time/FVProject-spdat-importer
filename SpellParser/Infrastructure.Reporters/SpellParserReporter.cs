@@ -1,11 +1,9 @@
 ﻿using SpellParser.Core;
-using SpellParser.Infrastructure.Data;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace SpellParser.Infrastructure.Reporters
 {
@@ -36,7 +34,8 @@ namespace SpellParser.Infrastructure.Reporters
         public void WriteSectionWithBullets<T>(string header, IEnumerable<T> changes, Func<T, string> reporter)
         {
             WriteSection(header, changes);
-            foreach (var change in changes) {
+            foreach (var change in changes)
+            {
                 stringBuilder.AppendLine($@"+ {reporter(change)}");
             }
             stringBuilder.AppendLine($@"");
@@ -83,6 +82,6 @@ namespace SpellParser.Infrastructure.Reporters
             // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
             Dispose(disposing: true);
             GC.SuppressFinalize(this);
-        }       
+        }
     }
 }

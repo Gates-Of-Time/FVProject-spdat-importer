@@ -1,13 +1,8 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using SpellParser.Commmands;
-using SpellParser.Core;
-using SpellParser.Core.Updater;
 using SpellParser.Infrastructure.Data;
 using SpellParser.Infrastructure.Reporters;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace SpellParser
 {
@@ -15,11 +10,9 @@ namespace SpellParser
     {
         private static void Main(string[] args)
         {
-
             //using var loggerFactory = LoggerFactory.Create(builder => builder.AddConsole());
             using var loggerFactory = LoggerFactory.Create(builder => builder.AddSimpleConsole(options => options.SingleLine = true));
             var logger = loggerFactory.CreateLogger<Program>();
-
 
             logger.LogInformation("Hello Everquest!");
 
@@ -27,7 +20,6 @@ namespace SpellParser
             IConfiguration config = new ConfigurationBuilder()
                             .AddJsonFile("appsettings.json")
                             .Build();
-
 
             var settings = config.GetRequiredSection("Settings").Get<Settings>();
 

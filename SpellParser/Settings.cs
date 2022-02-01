@@ -1,15 +1,16 @@
 ﻿using SpellParser.Core;
-using SpellParser.Infrastructure.Data;
 
 namespace SpellParser
 {
-    public enum Expansion { 
+    public enum Expansion
+    {
         Original,
         Kunark,
         Velious
     }
 
-    public class Settings {
+    public class Settings
+    {
         public Expansion Expansion { get; set; }
         public ImportOptions Import { get; set; }
         public ExportOptions Export { get; set; }

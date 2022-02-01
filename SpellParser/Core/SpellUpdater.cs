@@ -25,6 +25,7 @@ namespace SpellParser.Core
 
         public PEQSpell PEQSpell { get; }
         public ChangeTracker ChangeTracker { get; }
+
         public void UpdateFrom(EQCasterSpell eQCaster)
         {
             foreach (var updater in Updaters)

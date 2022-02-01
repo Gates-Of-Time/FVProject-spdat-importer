@@ -21,35 +21,39 @@ namespace SpellParser.Infrastructure.Data
                                        .ToArray();
 
             return values;
-
         }
 
-        static Func<EQCasterSpell, bool> HasValidSpellName = x => x.Spell_Name.EndsWith("Fear2") == false && x.Spell_Name != "Gift of";
-        static Func<EQCasterSpell, bool> HasValidSkill = x => x.Skill != "Instantaneous";
-        static Func<EQCasterSpell, bool> HasValidAttrib1 = x => x.Attrib_1.Contains("Teleport") == false;
+        private static Func<EQCasterSpell, bool> HasValidSpellName = x => x.Spell_Name.EndsWith("Fear2") == false && x.Spell_Name != "Gift of";
+        private static Func<EQCasterSpell, bool> HasValidSkill = x => x.Skill != "Instantaneous";
+        private static Func<EQCasterSpell, bool> HasValidAttrib1 = x => x.Attrib_1.Contains("Teleport") == false;
 
-        static Func<EQCasterSpell, bool> ExpansionFlag(Expansion expansion) {
-            switch (expansion) {
+        private static Func<EQCasterSpell, bool> ExpansionFlag(Expansion expansion)
+        {
+            switch (expansion)
+            {
                 case Expansion.Original:
                     return x => x.IsMaxLevel(50);
+
                 case Expansion.Kunark:
                 case Expansion.Velious:
                     return x => x.IsMaxLevel(60);
+
                 default:
                     throw new Exception($"Un-handled expansions <{expansion}>");
             }
         }
 
-        static EQCasterSpell Parse(string line)
+        private static EQCasterSpell Parse(string line)
         {
             var columns = line.Substring(1).Split("\',\'");
             var obj = new EQCasterSpell();
 
-            for (int i = 0; i < columns.Length-1; i++)
+            for (int i = 0; i < columns.Length - 1; i++)
             {
                 var columnName = SpellColumns[i];
                 var columnValue = columns[i].Replace('`', '\'');
-                if (columnName == nameof(EQCasterSpell.Spell_Name)) {
+                if (columnName == nameof(EQCasterSpell.Spell_Name))
+                {
                     columnValue = FixSpellName(columnValue);
                 }
 
@@ -64,15 +68,17 @@ namespace SpellParser.Infrastructure.Data
             return obj;
         }
 
-        static string FixSpellName(string spellName) {
-            if (SpellNames.TryGetValue(spellName, out var correctSpellName)) {
+        private static string FixSpellName(string spellName)
+        {
+            if (SpellNames.TryGetValue(spellName, out var correctSpellName))
+            {
                 return correctSpellName;
             }
 
             return spellName;
         }
 
-        static Dictionary<string, string> SpellNames = new Dictionary<string, string>() {
+        private static Dictionary<string, string> SpellNames = new Dictionary<string, string>() {
             { "Subjugation", "Boltran's Agacerie" },
             { "Jaxan's Jig o' Vigor", "Jaxan's Jig o` Vigor" },
             { "Illusion: Halfing", "Illusion: Halfling" },
@@ -86,7 +92,7 @@ namespace SpellParser.Infrastructure.Data
             { "Selo's Assonait Strane", "Selo's Assonant Strain" },
         };
 
-        static string[] SpellColumns
+        private static string[] SpellColumns
         {
             get
             {

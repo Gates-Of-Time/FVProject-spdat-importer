@@ -15,16 +15,17 @@ namespace SpellParser.Core.Updater
             }
 
             var changes = new List<Change>();
-            string duration = eQCaster.Duration;
-            if (duration != "" && rof2Spell.buffduration != duration)
-            {
-                changes.Add(new Change { Name = nameof(PEQSpell.buffduration), OldValue = rof2Spell.buffduration, NewValue = duration });
-            }
 
             string durationFormula = eQCaster.Dur_Formula;
             if (durationFormula != "" && rof2Spell.buffdurationformula != durationFormula)
             {
                 changes.Add(new Change { Name = nameof(PEQSpell.buffdurationformula), OldValue = rof2Spell.buffdurationformula, NewValue = durationFormula });
+            }
+
+            string duration = eQCaster.Duration;
+            if ((duration != "0" || changes.Any()) && duration != "" && rof2Spell.buffduration != duration)
+            {
+                changes.Add(new Change { Name = nameof(PEQSpell.buffduration), OldValue = rof2Spell.buffduration, NewValue = duration });
             }
 
             if (changes.Any())

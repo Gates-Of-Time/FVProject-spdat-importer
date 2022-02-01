@@ -9,6 +9,7 @@ namespace SpellParser.Core.Updater
     {
         // Effect Ids
         public const string SE_Charm = "22";
+
         public const string SE_Mez = "31";
         public const string SE_Illusion = "58";
         public const string SE_SummonCorpse = "91";
