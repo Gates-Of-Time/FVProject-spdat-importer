@@ -26,13 +26,30 @@ namespace SpellParser.Infrastructure.Reporters
             stringBuilder.Append(reportText);
         }
 
-        public void Write(IEnumerable<ChangeTracker> updates)
+        public void WriteSection<T>(string header, IEnumerable<T> changes)
         {
-            stringBuilder.AppendLine(@"## Manual Spell Updates");
-            stringBuilder.AppendLine($@"Number of spells: {updates.Count()}");
+            stringBuilder.AppendLine($@"## {header}");
+            stringBuilder.AppendLine($@"Occurences: {changes.Count()}");
             stringBuilder.AppendLine($@"");
-            var reportText = string.Join("\n\n", updates.Select(x => ChangeTrackerReporter.ToMarkdown(x)));
-            stringBuilder.Append(reportText);
+        }
+
+        public void WriteSectionWithBullets<T>(string header, IEnumerable<T> changes, Func<T, string> reporter)
+        {
+            WriteSection(header, changes);
+            foreach (var change in changes) {
+                stringBuilder.AppendLine($@"+ {reporter(change)}");
+            }
+            stringBuilder.AppendLine($@"");
+        }
+
+        public void WriteSectionWithoutBullets<T>(string header, IEnumerable<T> changes, Func<T, string> reporter)
+        {
+            WriteSection(header, changes);
+            foreach (var change in changes)
+            {
+                stringBuilder.AppendLine($@"{reporter(change)}");
+            }
+            stringBuilder.AppendLine($@"");
         }
 
         private static void EnsureDirectoryExists(string configFilePath)
