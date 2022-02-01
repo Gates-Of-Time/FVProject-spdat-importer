@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 
 namespace SpellParser.Core
 {
@@ -72,23 +71,24 @@ namespace SpellParser.Core
         public string Back_Range { get; set; }
         public string Up_Range { get; set; }
 
-        //public bool MatchPCLevels(PEQSpell peqSpell) {
-        //    return WAR == peqSpell.WAR
-        //        && CLR == peqSpell.CLR
-        //        && PAL == peqSpell.PAL
-        //        && RNG == peqSpell.RNG
-        //        && SHD == peqSpell.SHD
-        //        && DRU == peqSpell.DRU
-        //        && MNK == peqSpell.MNK
-        //        && BRD == peqSpell.BRD
-        //        && ROG == peqSpell.ROG
-        //        && SHM == peqSpell.SHM
-        //        && NEC == peqSpell.NEC
-        //        && WIZ == peqSpell.WIZ
-        //        && MAG == peqSpell.MAG
-        //        && ENC == peqSpell.ENC
-        //        ;
-        //}
+        public bool MatchPCLevels(PEQSpell peqSpell)
+        {
+            return (WAR == peqSpell.WAR || WAR == "61" && peqSpell.WAR == "255")
+                && (CLR == peqSpell.CLR || CLR == "61" && peqSpell.CLR == "255")
+                && (PAL == peqSpell.PAL || PAL == "61" && peqSpell.PAL == "255")
+                && (RNG == peqSpell.RNG || RNG == "61" && peqSpell.RNG == "255")
+                && (SHD == peqSpell.SHD || SHD == "61" && peqSpell.SHD == "255")
+                && (DRU == peqSpell.DRU || DRU == "61" && peqSpell.DRU == "255")
+                && (MNK == peqSpell.MNK || MNK == "61" && peqSpell.MNK == "255")
+                && (BRD == peqSpell.BRD || BRD == "61" && peqSpell.BRD == "255")
+                && (ROG == peqSpell.ROG || ROG == "61" && peqSpell.ROG == "255")
+                && (SHM == peqSpell.SHM || SHM == "61" && peqSpell.SHM == "255")
+                && (NEC == peqSpell.NEC || NEC == "61" && peqSpell.NEC == "255")
+                && (WIZ == peqSpell.WIZ || WIZ == "61" && peqSpell.WIZ == "255")
+                && (MAG == peqSpell.MAG || MAG == "61" && peqSpell.MAG == "255")
+                && (ENC == peqSpell.ENC || ENC == "61" && peqSpell.ENC == "255")
+                ;
+        }
 
         public bool IsMaxLevel(int minLevel)
         {

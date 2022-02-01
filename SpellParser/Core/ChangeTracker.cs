@@ -5,7 +5,6 @@ namespace SpellParser.Core
 {
     public class ChangeTracker
     {
-
         private ChangeTracker(string id, string name)
         {
             if (string.IsNullOrWhiteSpace(id))
@@ -40,41 +39,6 @@ namespace SpellParser.Core
         public void AddChanges(IEnumerable<Change> changes)
         {
             InternalChanges.AddRange(changes);
-        }
-
-        public string SQL {
-            get {
-                var sql = $@"-- {Name}
-UPDATE spells_new SET
-{string.Join("\n,", Changes.Select(x => $"{x.Name} = {GetSqlValue(x.Name, x.NewValue)}"))}
-WHERE id = {Id};";                
-                return sql;
-            }
-        }
-
-        public string UndoSQL
-        {
-            get
-            {
-                var sql = $@"-- {Name}
-UPDATE spells_new SET
-{string.Join("\n,", Changes.Select(x => $"{x.Name} = {GetSqlValue(x.Name, x.OldValue)}"))}
-WHERE id = {Id};";
-                return sql;
-            }
-        }
-
-        private string GetSqlValue(string columnName, string value) {
-            if (columnName == nameof(PEQSpell.name)) {
-                return $"'{value}'";
-            }
-
-            return value;
-        }
-
-        public override string ToString()
-        {
-            return $" Id = {Id}, Spell = {Name}, Changes = [{string.Join(',', Changes)}] ";
         }
     }
 }

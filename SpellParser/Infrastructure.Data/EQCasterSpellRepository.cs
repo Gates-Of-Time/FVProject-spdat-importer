@@ -9,45 +9,15 @@ namespace SpellParser.Infrastructure.Data
 {
     public class EQCasterSpellRepository
     {
-        public IEnumerable<EQCasterSpell> GetClassicSpells()
+        public IEnumerable<EQCasterSpell> GetAll(IImportOptions options, Expansion expansion)
         {
-            var values = File.ReadAllLines(@"..\..\..\..\DataFiles\exports\spdat.2000.04.18-original.txt")
+            var values = File.ReadAllLines(options.EQCasterExportFilePath)
                                        .Skip(1)
                                        .Select(v => Parse(v))
                                        .Where(HasValidSpellName)
                                        .Where(HasValidSkill)
                                        .Where(HasValidAttrib1)
-                                       .Where(IsClassic)
-                                       .ToArray();
-
-            return values;
-
-        }
-
-        public IEnumerable<EQCasterSpell> GetKunarkSpells()
-        {
-            var values = File.ReadAllLines(@"..\..\..\..\DataFiles\exports\spdat.2000.11.30-kunark.txt")
-                                       .Skip(1)
-                                       .Select(v => Parse(v))
-                                       .Where(HasValidSpellName)
-                                       .Where(HasValidSkill)
-                                       .Where(HasValidAttrib1)
-                                       .Where(IsKunark)
-                                       .ToArray();
-
-            return values;
-
-        }
-
-        public IEnumerable<EQCasterSpell> GetVelious()
-        {
-            var values = File.ReadAllLines(@"..\..\..\..\DataFiles\exports\spdat.2001.08.22-velious.txt")
-                                       .Skip(1)
-                                       .Select(v => Parse(v))
-                                       .Where(HasValidSpellName)
-                                       .Where(HasValidSkill)
-                                       .Where(HasValidAttrib1)
-                                       .Where(IsVelious)
+                                       .Where(ExpansionFlag(expansion))
                                        .ToArray();
 
             return values;
@@ -57,9 +27,18 @@ namespace SpellParser.Infrastructure.Data
         static Func<EQCasterSpell, bool> HasValidSpellName = x => x.Spell_Name.EndsWith("Fear2") == false && x.Spell_Name != "Gift of";
         static Func<EQCasterSpell, bool> HasValidSkill = x => x.Skill != "Instantaneous";
         static Func<EQCasterSpell, bool> HasValidAttrib1 = x => x.Attrib_1.Contains("Teleport") == false;
-        static Func<EQCasterSpell, bool> IsClassic = x => x.IsMaxLevel(50);
-        static Func<EQCasterSpell, bool> IsKunark = x => x.IsMaxLevel(60);
-        static Func<EQCasterSpell, bool> IsVelious = x => x.IsMaxLevel(60);
+
+        static Func<EQCasterSpell, bool> ExpansionFlag(Expansion expansion) {
+            switch (expansion) {
+                case Expansion.Original:
+                    return x => x.IsMaxLevel(50);
+                case Expansion.Kunark:
+                case Expansion.Velious:
+                    return x => x.IsMaxLevel(60);
+                default:
+                    throw new Exception($"Un-handled expansions <{expansion}>");
+            }
+        }
 
         static EQCasterSpell Parse(string line)
         {
@@ -103,6 +82,8 @@ namespace SpellParser.Infrastructure.Data
             { "O'Keils Radiation", "O`Keils Radiation" },
             { "United Resolve", "Heroic Bond" },
             { "Track Cropse", "Track Corpse" },
+            { "Cantana of Replenishment", "Cantata of Replenishment" },
+            { "Selo's Assonait Strane", "Selo's Assonant Strain" },
         };
 
         static string[] SpellColumns

@@ -13,7 +13,7 @@ namespace SpellParser.Core
             Updaters = updaters ?? throw new ArgumentNullException(nameof(updaters));
             ChangeTracker = ChangeTracker.From(peqSpell);
 
-            updaters.FirstOrDefault(u => u is NameUpdater)?.UpdateFrom(PEQSpell, null);
+            ChangeTracker.AddChanges(updaters.FirstOrDefault(u => u is NameUpdater)?.UpdateFrom(PEQSpell, new EQCasterSpell()) ?? Array.Empty<Change>());
         }
 
         public static SpellUpdater From(PEQSpell rof2Spell, IEnumerable<ISpellPropertyUpdater> updaters)
@@ -25,7 +25,6 @@ namespace SpellParser.Core
 
         public PEQSpell PEQSpell { get; }
         public ChangeTracker ChangeTracker { get; }
-
         public void UpdateFrom(EQCasterSpell eQCaster)
         {
             foreach (var updater in Updaters)

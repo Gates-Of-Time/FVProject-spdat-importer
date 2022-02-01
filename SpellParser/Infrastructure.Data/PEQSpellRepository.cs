@@ -9,12 +9,14 @@ namespace SpellParser.Infrastructure.Data
 {
     public class PEQSpellRepository
     {
+        const int EqCasterMaxId = 2010;
 
-        public IEnumerable<PEQSpell> GetAll()
+        public IEnumerable<PEQSpell> GetAll(IImportOptions options)
         {
-            var values = File.ReadAllLines(@"..\..\..\..\DataFiles\exports\spells_us_pre_oiginal.txt")
+            var values = File.ReadAllLines(options.SpellsUSFilePath)
                                         .Select(v => Parse(v))
                                         .Where(s => string.IsNullOrWhiteSpace(s.name) == false)
+                                        .Where(s => Convert.ToInt32(s.id) <= options.MaxSpellId)
                                         .ToArray();
             return values;
         }

@@ -171,6 +171,9 @@ namespace SpellParser.Core.Updater
                 case "x 10":
                     return "10";
 
+                case "120":
+                    return "120";
+
                 case "121":
                     return "121";
 
@@ -297,6 +300,8 @@ namespace SpellParser.Core.Updater
                     return "68";
                 case "Resurrection":
                     return "81";
+                case "Sacrifice":
+                    return "95";
                 case "See Invisible":
                     return "254";
                 case "See Spell Number":
@@ -329,6 +334,8 @@ namespace SpellParser.Core.Updater
                     return "32";
                 case "Summon Pet":
                     return "33";
+                case "Summon Player":
+                    return "82";
                 case "Summon Skeleton":
                     return "71";
                 case "Throw Into Sky":
@@ -351,7 +358,6 @@ namespace SpellParser.Core.Updater
                     return "9";
                 case "Stuns":
                     return "21";
-
                 case "Unknown 4E":
                     return "78";
                 default:

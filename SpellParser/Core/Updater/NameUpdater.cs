@@ -24,6 +24,7 @@ namespace SpellParser.Core.Updater
             { "Tashina", "Tashan" },
             { "Malaisement", "Malisement" },
             { "Malaise", "Malise" },
+            { "Largo's Assonant Binding", "Largo's Absonant Binding" },
         };
 
         public IEnumerable<Change> UpdateFrom(PEQSpell rof2Spell, EQCasterSpell eQCaster)

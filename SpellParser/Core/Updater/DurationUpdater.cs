@@ -8,6 +8,11 @@ namespace SpellParser.Core.Updater
     {
         public IEnumerable<Change> UpdateFrom(PEQSpell rof2Spell, EQCasterSpell eQCaster)
         {
+            // skip bard songs
+            if (rof2Spell.skill == "12" || rof2Spell.skill == "41" || rof2Spell.skill == "49" || rof2Spell.skill == "54" || rof2Spell.skill == "70")
+            {
+                return Array.Empty<Change>();
+            }
 
             var changes = new List<Change>();
             string duration = eQCaster.Duration;
