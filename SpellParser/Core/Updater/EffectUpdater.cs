@@ -8,8 +8,11 @@ namespace SpellParser.Core.Updater
     internal class EffectUpdater : ISpellPropertyUpdater
     {
         // Effect Ids
+        public const string SE_Charm = "22";
         public const string SE_Mez = "31";
+        public const string SE_Illusion = "58";
         public const string SE_SummonCorpse = "91";
+        public const string SE_SpellTrigger = "340";
 
         // Category Ids (groups)
         public const string SummonCorpse = "52";
@@ -62,10 +65,10 @@ namespace SpellParser.Core.Updater
             var eqCasterMaxValue = $"{EQCasterMaxValue.GetValue(eqCasterSpell)}";
             var eqCasterForumla = $"{EQCasterForumla.GetValue(eqCasterSpell)}";
 
-            if (peqEffectId == SE_SummonCorpse || peqSpell.spell_category == SummonCorpse) return Array.Empty<Change>();
+            if (peqEffectId == SE_Charm|| peqEffectId == SE_SummonCorpse || peqEffectId == SE_Illusion || peqEffectId == SE_SpellTrigger || peqSpell.spell_category == SummonCorpse) return Array.Empty<Change>();
 
             string effectId = peqEffectId == SE_Mez ? peqEffectId : AttribConverter(eqCasterEffectId, eqCasterBaseValue);
-            if (peqEffectId != effectId)
+            if (peqEffectId != effectId && !(effectId == "254" && peqEffectId == "10"))
             {
                 changes.Add(new Change { Name = PEQEffectIdColumnName, OldValue = peqEffectId, NewValue = effectId });
             }

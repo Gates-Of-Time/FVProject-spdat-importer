@@ -8,9 +8,12 @@ namespace SpellParser.Core.Updater
     internal class EffectResetUpdater : ISpellPropertyUpdater
     {
         // Effect Ids
+        public const string SE_Charm = "22";
         public const string SE_Mez = "31";
+        public const string SE_Illusion = "58";
         public const string SE_SummonCorpse = "91";
         public const string SE_StackingCommand_Block = "148";
+        public const string SE_SpellTrigger = "340";
 
         // Category Ids (groups)
         public const string SummonCorpse = "52";
@@ -44,7 +47,7 @@ namespace SpellParser.Core.Updater
             var peqMaxValue = $"{PEQMaxValue.GetValue(peqSpell)}";
             var peqForumla = $"{PEQForumla.GetValue(peqSpell)}";
 
-            if (peqEffectId == SE_SummonCorpse || peqEffectId == SE_StackingCommand_Block || peqSpell.spell_category == SummonCorpse) return Array.Empty<Change>();
+            if (peqEffectId == SE_Charm || peqEffectId == SE_SummonCorpse || peqEffectId == SE_Illusion || peqEffectId == SE_StackingCommand_Block || peqEffectId == SE_SpellTrigger || peqSpell.spell_category == SummonCorpse) return Array.Empty<Change>();
 
             var changes = new List<Change>();
             if (peqEffectId != "254")
