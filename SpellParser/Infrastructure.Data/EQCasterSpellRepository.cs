@@ -25,7 +25,7 @@ namespace SpellParser.Infrastructure.Data
 
         private static Func<EQCasterSpell, bool> HasValidSpellName = x => x.Spell_Name.EndsWith("Fear2") == false && x.Spell_Name != "Gift of";
         private static Func<EQCasterSpell, bool> HasValidSkill = x => x.Skill != "Instantaneous";
-        private static Func<EQCasterSpell, bool> HasValidAttrib1 = x => x.Attrib_1.Contains("Teleport") == false;
+        private static Func<EQCasterSpell, bool> HasValidAttrib1 = x => x.Attrib_1.Contains("Teleport") == false && x.Attrib_1.Contains("Evacuate") == false;
 
         private static Func<EQCasterSpell, bool> ExpansionFlag(Expansion expansion)
         {
