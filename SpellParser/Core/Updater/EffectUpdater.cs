@@ -8,15 +8,33 @@ namespace SpellParser.Core.Updater
     internal class EffectUpdater : ISpellPropertyUpdater
     {
         // Effect Ids
-        public const string SE_Charm = "22";
-
-        public const string SE_Mez = "31";
-        public const string SE_Illusion = "58";
-        public const string SE_SummonCorpse = "91";
-        public const string SE_SpellTrigger = "340";
+        private const string SE_Charm = "22";
+        private const string SE_Fear = "23";
+        private const string SE_Stamina = "24";
+        private const string SE_ChangeFrenzyRad = "30";
+        private const string SE_Mez = "31";
+        private const string SE_Illusion = "58";
+        private const string SE_Harmony = "86";
+        private const string SE_SummonCorpse = "91";
+        private const string SE_Hate = "192";
+        private const string SE_SpellTrigger = "340";
 
         // Category Ids (groups)
-        public const string SummonCorpse = "52";
+        private const string SummonCorpse = "52";
+
+        private static string[] SkipPEQEffectIds = new[] {
+            SE_Charm
+            , SE_SummonCorpse
+            , SE_Illusion
+            , SE_SpellTrigger
+            , SE_Hate
+        };
+
+        private static string[] SkipSPDATEffectIds = new[] {
+            SE_Stamina
+        };
+
+
 
         public EffectUpdater(int effectNumber)
         {
@@ -60,29 +78,29 @@ namespace SpellParser.Core.Updater
 
             var eqCasterEffectId = $"{EQCasterEffectId.GetValue(eqCasterSpell)}";
             var eqCasterBaseValue = $"{EQCasterBaseValue.GetValue(eqCasterSpell)}";
-            var eqCasterMaxValue = $"{EQCasterMaxValue.GetValue(eqCasterSpell)}";
+            var eqCasterMaxValue = $"{ Math.Abs(Convert.ToInt32(EQCasterMaxValue.GetValue(eqCasterSpell)))}";
             var eqCasterForumla = $"{EQCasterForumla.GetValue(eqCasterSpell)}";
 
-            if (peqEffectId == SE_Charm || peqEffectId == SE_SummonCorpse || peqEffectId == SE_Illusion || peqEffectId == SE_SpellTrigger || peqSpell.spell_category == SummonCorpse) return Array.Empty<Change>();
-
             string effectId = peqEffectId == SE_Mez ? peqEffectId : AttribConverter(eqCasterEffectId, eqCasterBaseValue);
+            if (SkipSPDATEffectIds.Contains(effectId) || SkipPEQEffectIds.Contains(peqEffectId) || peqSpell.spell_category == SummonCorpse) return Array.Empty<Change>();
+
             if (peqEffectId != effectId && !(effectId == "254" && peqEffectId == "10"))
             {
                 changes.Add(new Change { Name = PEQEffectIdColumnName, OldValue = peqEffectId, NewValue = effectId });
             }
 
-            if (eqCasterBaseValue != "" && peqBaseValue != eqCasterBaseValue)
+            if (eqCasterEffectId != "" && eqCasterBaseValue != "" && peqBaseValue != eqCasterBaseValue)
             {
                 changes.Add(new Change { Name = PEQBaseValueColumnName, OldValue = peqBaseValue, NewValue = eqCasterBaseValue });
             }
 
-            if (eqCasterMaxValue != "" && peqMaxValue != eqCasterMaxValue)
+            if (effectId != SE_Fear && effectId != SE_Mez && effectId != SE_ChangeFrenzyRad && effectId != SE_Harmony && eqCasterEffectId != "" && eqCasterMaxValue != "" && peqMaxValue != eqCasterMaxValue && !(HasSameBaseAndMaxValueForHPEffect(effectId, peqBaseValue, eqCasterMaxValue)))
             {
                 changes.Add(new Change { Name = PEQMaxValueColumnName, OldValue = peqMaxValue, NewValue = eqCasterMaxValue });
             }
 
             string formula = FormulaConverter(eqCasterForumla);
-            if (peqForumla != formula)
+            if (eqCasterEffectId != "" && peqForumla != formula)
             {
                 changes.Add(new Change { Name = PEQForumlaColumnName, OldValue = peqForumla, NewValue = formula });
             }
@@ -93,6 +111,10 @@ namespace SpellParser.Core.Updater
             }
 
             return Array.Empty<Change>();
+        }
+
+        private bool HasSameBaseAndMaxValueForHPEffect(string effectId, string peqBaseValue, string eqCasterMaxValue) {
+            return (effectId == "0" && Math.Abs(Convert.ToInt32(peqBaseValue)) == Math.Abs(Convert.ToInt32(eqCasterMaxValue)));
         }
 
         // PEQ base formula types: https://docs.eqemu.io/server/spells/base-value-formulas/
@@ -358,7 +380,7 @@ namespace SpellParser.Core.Updater
                     return "95";
 
                 case "See Invisible":
-                    return "254";
+                    return "13";
 
                 case "See Spell Number":
                     return "85";
