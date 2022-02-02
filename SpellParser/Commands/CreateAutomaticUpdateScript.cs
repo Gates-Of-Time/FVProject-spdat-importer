@@ -31,6 +31,7 @@ namespace SpellParser.Commmands
                 new NameUpdater()
                 , new CastTimersUpdater()
                 , new DurationUpdater()
+                , new ManaUpdater()
             };
 
             var peqSpellUpdaters = PeqSpells.Select(x => SpellUpdater.From(x, updaters)).ToArray();
