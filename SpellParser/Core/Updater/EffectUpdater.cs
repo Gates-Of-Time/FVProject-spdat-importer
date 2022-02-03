@@ -13,6 +13,7 @@ namespace SpellParser.Core.Updater
         private const string SE_Stamina = "24";
         private const string SE_ChangeFrenzyRad = "30";
         private const string SE_Mez = "31";
+        private const string SE_DiseaseCounter = "35";
         private const string SE_Illusion = "58";
         private const string SE_Harmony = "86";
         private const string SE_SummonCorpse = "91";
@@ -20,6 +21,7 @@ namespace SpellParser.Core.Updater
         private const string SE_SpellTrigger = "340";
 
         // Category Ids (groups)
+        private const string SlowSingle = "38";
         private const string SummonCorpse = "52";
 
         private static string[] SkipPEQEffectIds = new[] {
@@ -84,7 +86,7 @@ namespace SpellParser.Core.Updater
             string effectId = peqEffectId == SE_Mez ? peqEffectId : AttribConverter(eqCasterEffectId, eqCasterBaseValue);
             if (SkipSPDATEffectIds.Contains(effectId) || SkipPEQEffectIds.Contains(peqEffectId) || peqSpell.spell_category == SummonCorpse) return Array.Empty<Change>();
 
-            if (peqEffectId != effectId && !(effectId == "254" && peqEffectId == "10"))
+            if (peqEffectId != effectId && !(effectId == "254" && peqEffectId == "10") && !(effectId == SE_DiseaseCounter && peqSpell.spell_category == SlowSingle))
             {
                 changes.Add(new Change { Name = PEQEffectIdColumnName, OldValue = peqEffectId, NewValue = effectId });
             }
