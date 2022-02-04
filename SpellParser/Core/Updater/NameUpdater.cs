@@ -27,7 +27,7 @@ namespace SpellParser.Core.Updater
             { "Largo's Assonant Binding", "Largo's Absonant Binding" },
         };
 
-        public IEnumerable<Change> UpdateFrom(PEQSpell rof2Spell, EQCasterSpell eQCaster)
+        public IEnumerable<Change> UpdateFrom(PEQSpell rof2Spell, EQCasterSpell eqCasterSpell)
         {
             if (SpellNameChanges.TryGetValue(rof2Spell.name, out var correctSpellName))
             {

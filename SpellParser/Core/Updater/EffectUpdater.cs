@@ -1,110 +1,60 @@
-﻿using System;
+﻿using SpellParser.Core.PEQ;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 
 namespace SpellParser.Core.Updater
 {
-    internal class EffectUpdater : ISpellPropertyUpdater
+    internal class EffectUpdater
     {
-        // Effect Ids
-        private const string SE_Charm = "22";
-        private const string SE_Fear = "23";
-        private const string SE_Stamina = "24";
-        private const string SE_ChangeFrenzyRad = "30";
-        private const string SE_Mez = "31";
-        private const string SE_DiseaseCounter = "35";
-        private const string SE_Illusion = "58";
-        private const string SE_Harmony = "86";
-        private const string SE_SummonCorpse = "91";
-        private const string SE_Hate = "192";
-        private const string SE_SpellTrigger = "340";
-
-        // Category Ids (groups)
-        private const string SlowSingle = "38";
-        private const string SummonCorpse = "52";
-
         private static string[] SkipPEQEffectIds = new[] {
-            SE_Charm
-            , SE_SummonCorpse
-            , SE_Illusion
-            , SE_SpellTrigger
-            , SE_Hate
+            EffectType.SE_Charm
+            , EffectType.SE_SummonCorpse
+            , EffectType.SE_Illusion
+            , EffectType.SE_SpellTrigger
+            , EffectType.SE_Hate
         };
 
         private static string[] SkipSPDATEffectIds = new[] {
-            SE_Stamina
+            EffectType.SE_Stamina
         };
 
-
-
-        public EffectUpdater(int effectNumber)
-        {
-            EffectNumber = effectNumber;
-
-            var rof2Spell = new PEQSpell();
-            PEQEffectId = rof2Spell.GetType().GetProperty(PEQEffectIdColumnName, BindingFlags.Public | BindingFlags.Instance);
-            PEQBaseValue = rof2Spell.GetType().GetProperty(PEQBaseValueColumnName, BindingFlags.Public | BindingFlags.Instance);
-            PEQMaxValue = rof2Spell.GetType().GetProperty(PEQMaxValueColumnName, BindingFlags.Public | BindingFlags.Instance);
-            PEQForumla = rof2Spell.GetType().GetProperty(PEQForumlaColumnName, BindingFlags.Public | BindingFlags.Instance);
-
-            var eqCasterSpell = new EQCasterSpell();
-            EQCasterEffectId = eqCasterSpell.GetType().GetProperty($"Attrib_{EffectNumber}", BindingFlags.Public | BindingFlags.Instance);
-            EQCasterBaseValue = eqCasterSpell.GetType().GetProperty($"Min_{EffectNumber}", BindingFlags.Public | BindingFlags.Instance);
-            EQCasterMaxValue = eqCasterSpell.GetType().GetProperty($"Max_{EffectNumber}", BindingFlags.Public | BindingFlags.Instance);
-            EQCasterForumla = eqCasterSpell.GetType().GetProperty($"Calc_{EffectNumber}", BindingFlags.Public | BindingFlags.Instance);
-        }
-
-        private PropertyInfo PEQEffectId { get; }
-        private PropertyInfo PEQBaseValue { get; }
-        private PropertyInfo PEQMaxValue { get; }
-        private PropertyInfo PEQForumla { get; }
-        private PropertyInfo EQCasterEffectId { get; }
-        private PropertyInfo EQCasterBaseValue { get; }
-        private PropertyInfo EQCasterMaxValue { get; }
-        private PropertyInfo EQCasterForumla { get; }
-        private int EffectNumber { get; }
-
-        private string PEQEffectIdColumnName => $"{nameof(PEQSpell.effectid1).Remove(nameof(PEQSpell.effectid1).Length - 1)}{EffectNumber}";
-        private string PEQBaseValueColumnName => $"{nameof(PEQSpell.effect_base_value1).Remove(nameof(PEQSpell.effect_base_value1).Length - 1)}{EffectNumber}";
-        private string PEQMaxValueColumnName => $"{nameof(PEQSpell.max1).Remove(nameof(PEQSpell.max1).Length - 1)}{EffectNumber}";
-        private string PEQForumlaColumnName => $"{nameof(PEQSpell.formula1).Remove(nameof(PEQSpell.formula1).Length - 1)}{EffectNumber}";
-
-        public IEnumerable<Change> UpdateFrom(PEQSpell peqSpell, EQCasterSpell eqCasterSpell)
+        public IEnumerable<Change> UpdateFrom(int effectNumber, PEQSpell peqSpell, SpellEffect peqSpellEffect, SpellEffect eqCasterSpellEffect)
         {
             var changes = new List<Change>();
-            var peqEffectId = $"{PEQEffectId.GetValue(peqSpell)}";
-            var peqBaseValue = $"{PEQBaseValue.GetValue(peqSpell)}";
-            var peqMaxValue = $"{PEQMaxValue.GetValue(peqSpell)}";
-            var peqForumla = $"{PEQForumla.GetValue(peqSpell)}";
+            var peqEffectId = peqSpellEffect.EffectId;
+            var peqBaseValue = peqSpellEffect.BaseValue;
+            var peqMaxValue = peqSpellEffect.MaxValue;
+            var peqForumla = peqSpellEffect.Formula;
 
-            var eqCasterEffectId = $"{EQCasterEffectId.GetValue(eqCasterSpell)}";
-            var eqCasterBaseValue = $"{EQCasterBaseValue.GetValue(eqCasterSpell)}";
-            var eqCasterMaxValue = $"{ Math.Abs(Convert.ToInt32(EQCasterMaxValue.GetValue(eqCasterSpell)))}";
-            var eqCasterForumla = $"{EQCasterForumla.GetValue(eqCasterSpell)}";
+            var eqCasterEffectId = eqCasterSpellEffect.EffectId;
+            var eqCasterBaseValue = eqCasterSpellEffect.BaseValue;
+            var eqCasterMaxValue = eqCasterSpellEffect.MaxValue != "" ? $"{Math.Abs(Convert.ToInt32(eqCasterSpellEffect.MaxValue))}" : "";
+            var eqCasterForumla = eqCasterSpellEffect.Formula;
 
-            string effectId = peqEffectId == SE_Mez ? peqEffectId : AttribConverter(eqCasterEffectId, eqCasterBaseValue);
-            if (SkipSPDATEffectIds.Contains(effectId) || SkipPEQEffectIds.Contains(peqEffectId) || peqSpell.spell_category == SummonCorpse) return Array.Empty<Change>();
 
-            if (peqEffectId != effectId && !(effectId == "254" && peqEffectId == "10") && !(effectId == SE_DiseaseCounter && peqSpell.spell_category == SlowSingle))
+            string effectId = peqEffectId == EffectType.SE_Mez ? peqEffectId : AttribConverter(eqCasterEffectId, eqCasterBaseValue);
+            if (SkipSPDATEffectIds.Contains(effectId) || SkipPEQEffectIds.Contains(peqEffectId) || peqSpell.spell_category == Category.SummonCorpse) return Array.Empty<Change>();
+
+            if (peqEffectId != effectId && !(effectId == EffectType.SE_Blank && peqEffectId == EffectType.SE_CHA) && !(effectId == EffectType.SE_DiseaseCounter && peqSpell.spell_category == Category.SlowSingle))
             {
-                changes.Add(new Change { Name = PEQEffectIdColumnName, OldValue = peqEffectId, NewValue = effectId });
+                changes.Add(new Change { Name = PEQEffectIdColumnName(effectNumber), OldValue = peqEffectId, NewValue = effectId });
             }
 
             if (eqCasterEffectId != "" && eqCasterBaseValue != "" && peqBaseValue != eqCasterBaseValue)
             {
-                changes.Add(new Change { Name = PEQBaseValueColumnName, OldValue = peqBaseValue, NewValue = eqCasterBaseValue });
+                changes.Add(new Change { Name = PEQBaseValueColumnName(effectNumber), OldValue = peqBaseValue, NewValue = eqCasterBaseValue });
             }
 
-            if (effectId != SE_Fear && effectId != SE_Mez && effectId != SE_ChangeFrenzyRad && effectId != SE_Harmony && eqCasterEffectId != "" && eqCasterMaxValue != "" && peqMaxValue != eqCasterMaxValue && !(HasSameBaseAndMaxValueForHPEffect(effectId, peqBaseValue, eqCasterMaxValue)))
+            if (effectId != EffectType.SE_Fear && effectId != EffectType.SE_Mez && effectId != EffectType.SE_ChangeFrenzyRad && effectId != EffectType.SE_Harmony && eqCasterEffectId != "" && eqCasterMaxValue != "" && peqMaxValue != eqCasterMaxValue && !(HasSameBaseAndMaxValueForHPEffect(effectId, peqBaseValue, eqCasterMaxValue)))
             {
-                changes.Add(new Change { Name = PEQMaxValueColumnName, OldValue = peqMaxValue, NewValue = eqCasterMaxValue });
+                changes.Add(new Change { Name = PEQMaxValueColumnName(effectNumber), OldValue = peqMaxValue, NewValue = eqCasterMaxValue });
             }
 
             string formula = FormulaConverter(eqCasterForumla);
             if (eqCasterEffectId != "" && peqForumla != formula)
             {
-                changes.Add(new Change { Name = PEQForumlaColumnName, OldValue = peqForumla, NewValue = formula });
+                changes.Add(new Change { Name = PEQForumlaColumnName(effectNumber), OldValue = peqForumla, NewValue = formula });
             }
 
             if (changes.Any())
@@ -115,9 +65,17 @@ namespace SpellParser.Core.Updater
             return Array.Empty<Change>();
         }
 
-        private bool HasSameBaseAndMaxValueForHPEffect(string effectId, string peqBaseValue, string eqCasterMaxValue) {
+        private string PEQEffectIdColumnName(int EffectNumber) => $"{nameof(PEQSpell.effectid1).Remove(nameof(PEQSpell.effectid1).Length - 1)}{EffectNumber}";
+        private string PEQBaseValueColumnName(int EffectNumber) => $"{nameof(PEQSpell.effect_base_value1).Remove(nameof(PEQSpell.effect_base_value1).Length - 1)}{EffectNumber}";
+        private string PEQMaxValueColumnName(int EffectNumber) => $"{nameof(PEQSpell.max1).Remove(nameof(PEQSpell.max1).Length - 1)}{EffectNumber}";
+        private string PEQForumlaColumnName(int EffectNumber) => $"{nameof(PEQSpell.formula1).Remove(nameof(PEQSpell.formula1).Length - 1)}{EffectNumber}";
+
+        private bool HasSameBaseAndMaxValueForHPEffect(string effectId, string peqBaseValue, string eqCasterMaxValue)
+        {
             return (effectId == "0" && Math.Abs(Convert.ToInt32(peqBaseValue)) == Math.Abs(Convert.ToInt32(eqCasterMaxValue)));
         }
+
+
 
         // PEQ base formula types: https://docs.eqemu.io/server/spells/base-value-formulas/
         private string FormulaConverter(string eqCasterFormula)

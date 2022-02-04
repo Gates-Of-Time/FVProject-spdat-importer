@@ -240,6 +240,17 @@
         public string field235 { get; set; }
         public string field236 { get; set; }
 
+        public SpellEffect[] SpellEffects => new SpellEffect[] {
+            new SpellEffect() { EffectId = effectid1,  BaseValue = effect_base_value1, MaxValue = max1, LimitValue = effect_limit_value1, Formula = formula1},
+            new SpellEffect() { EffectId = effectid2,  BaseValue = effect_base_value2, MaxValue = max2, LimitValue = effect_limit_value2, Formula = formula2},
+            new SpellEffect() { EffectId = effectid3,  BaseValue = effect_base_value3, MaxValue = max3, LimitValue = effect_limit_value3, Formula = formula3},
+            new SpellEffect() { EffectId = effectid4,  BaseValue = effect_base_value4, MaxValue = max4, LimitValue = effect_limit_value4, Formula = formula4},
+            new SpellEffect() { EffectId = effectid5,  BaseValue = effect_base_value1, MaxValue = max5, LimitValue = effect_limit_value5, Formula = formula5},
+            new SpellEffect() { EffectId = effectid6,  BaseValue = effect_base_value2, MaxValue = max6, LimitValue = effect_limit_value6, Formula = formula6},
+            new SpellEffect() { EffectId = effectid7,  BaseValue = effect_base_value3, MaxValue = max7, LimitValue = effect_limit_value7, Formula = formula7},
+            new SpellEffect() { EffectId = effectid8,  BaseValue = effect_base_value4, MaxValue = max8, LimitValue = effect_limit_value8, Formula = formula8},
+        };
+
         public string WAR => "";
         public string CLR => classes1;
         public string PAL => classes8;

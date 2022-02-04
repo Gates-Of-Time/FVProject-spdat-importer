@@ -71,6 +71,13 @@ namespace SpellParser.Core
         public string Back_Range { get; set; }
         public string Up_Range { get; set; }
 
+        public SpellEffect[] SpellEffects => new SpellEffect[] {
+            new SpellEffect() { EffectId = Attrib_1,  BaseValue = Min_1, MaxValue = Max_1, Formula = Calc_1},
+            new SpellEffect() { EffectId = Attrib_2,  BaseValue = Min_2, MaxValue = Max_2, Formula = Calc_2},
+            new SpellEffect() { EffectId = Attrib_3,  BaseValue = Min_3, MaxValue = Max_3, Formula = Calc_3},
+            new SpellEffect() { EffectId = Attrib_4,  BaseValue = Min_4, MaxValue = Max_4, Formula = Calc_4},
+        };
+
         public bool MatchPCLevels(PEQSpell peqSpell)
         {
             return (WAR == peqSpell.WAR || WAR == "61" && peqSpell.WAR == "255")

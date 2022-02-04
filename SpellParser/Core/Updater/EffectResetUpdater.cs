@@ -1,74 +1,48 @@
-﻿using System;
+﻿using SpellParser.Core.PEQ;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 
 namespace SpellParser.Core.Updater
 {
-    internal class EffectResetUpdater : ISpellPropertyUpdater
+    internal class EffectResetUpdater
     {
-        // Effect Ids
-        public const string SE_Charm = "22";
+        private static string[] SkipPEQEffectIds = new[] {
+            EffectType.SE_Charm
+            , EffectType.SE_SummonCorpse
+            , EffectType.SE_Illusion
+            , EffectType.SE_SpellTrigger
+            , EffectType.SE_StackingCommand_Block
+        };
 
-        public const string SE_Mez = "31";
-        public const string SE_Illusion = "58";
-        public const string SE_SummonCorpse = "91";
-        public const string SE_StackingCommand_Block = "148";
-        public const string SE_SpellTrigger = "340";
-
-        // Category Ids (groups)
-        public const string SummonCorpse = "52";
-
-        public EffectResetUpdater(int effectNumber)
+        public IEnumerable<Change> UpdateFrom(int effectNumber, PEQSpell peqSpell, SpellEffect peqSpellEffect, SpellEffect eqCasterSpellEffect)
         {
-            EffectNumber = effectNumber;
+            var peqEffectId = peqSpellEffect.EffectId;
+            var peqBaseValue = peqSpellEffect.BaseValue;
+            var peqMaxValue = peqSpellEffect.MaxValue;
+            var peqForumla = peqSpellEffect.Formula;
 
-            var rof2Spell = new PEQSpell();
-            PEQEffectId = rof2Spell.GetType().GetProperty(PEQEffectIdColumnName, BindingFlags.Public | BindingFlags.Instance);
-            PEQBaseValue = rof2Spell.GetType().GetProperty(PEQBaseValueColumnName, BindingFlags.Public | BindingFlags.Instance);
-            PEQMaxValue = rof2Spell.GetType().GetProperty(PEQMaxValueColumnName, BindingFlags.Public | BindingFlags.Instance);
-            PEQForumla = rof2Spell.GetType().GetProperty(PEQForumlaColumnName, BindingFlags.Public | BindingFlags.Instance);
-        }
-
-        private PropertyInfo PEQEffectId { get; }
-        private PropertyInfo PEQBaseValue { get; }
-        private PropertyInfo PEQMaxValue { get; }
-        private PropertyInfo PEQForumla { get; }
-        private int EffectNumber { get; }
-
-        private string PEQEffectIdColumnName => $"{nameof(PEQSpell.effectid1).Remove(nameof(PEQSpell.effectid1).Length - 1)}{EffectNumber}";
-        private string PEQBaseValueColumnName => $"{nameof(PEQSpell.effect_base_value1).Remove(nameof(PEQSpell.effect_base_value1).Length - 1)}{EffectNumber}";
-        private string PEQMaxValueColumnName => $"{nameof(PEQSpell.max1).Remove(nameof(PEQSpell.max1).Length - 1)}{EffectNumber}";
-        private string PEQForumlaColumnName => $"{nameof(PEQSpell.formula1).Remove(nameof(PEQSpell.formula1).Length - 1)}{EffectNumber}";
-
-        public IEnumerable<Change> UpdateFrom(PEQSpell peqSpell, EQCasterSpell eQCaster)
-        {
-            var peqEffectId = $"{PEQEffectId.GetValue(peqSpell)}";
-            var peqBaseValue = $"{PEQBaseValue.GetValue(peqSpell)}";
-            var peqMaxValue = $"{PEQMaxValue.GetValue(peqSpell)}";
-            var peqForumla = $"{PEQForumla.GetValue(peqSpell)}";
-
-            if (peqEffectId == SE_Charm || peqEffectId == SE_SummonCorpse || peqEffectId == SE_Illusion || peqEffectId == SE_StackingCommand_Block || peqEffectId == SE_SpellTrigger || peqSpell.spell_category == SummonCorpse) return Array.Empty<Change>();
+            if (SkipPEQEffectIds.Contains(peqEffectId) || peqSpell.spell_category == Category.SummonCorpse) return Array.Empty<Change>();
 
             var changes = new List<Change>();
             if (peqEffectId != "254")
             {
-                changes.Add(new Change { Name = PEQEffectIdColumnName, OldValue = peqEffectId, NewValue = "254" });
+                changes.Add(new Change { Name = PEQEffectIdColumnName(effectNumber), OldValue = peqEffectId, NewValue = "254" });
             }
 
             if (peqBaseValue != "0")
             {
-                changes.Add(new Change { Name = PEQBaseValueColumnName, OldValue = peqBaseValue, NewValue = "0" });
+                changes.Add(new Change { Name = PEQBaseValueColumnName(effectNumber), OldValue = peqBaseValue, NewValue = "0" });
             }
 
             if (peqMaxValue != "0")
             {
-                changes.Add(new Change { Name = PEQMaxValueColumnName, OldValue = peqMaxValue, NewValue = "0" });
+                changes.Add(new Change { Name = PEQMaxValueColumnName(effectNumber), OldValue = peqMaxValue, NewValue = "0" });
             }
 
             if (peqForumla != "100")
             {
-                changes.Add(new Change { Name = PEQForumlaColumnName, OldValue = peqForumla, NewValue = "100" });
+                changes.Add(new Change { Name = PEQForumlaColumnName(effectNumber), OldValue = peqForumla, NewValue = "100" });
             }
 
             if (changes.Any())
@@ -78,5 +52,10 @@ namespace SpellParser.Core.Updater
 
             return Array.Empty<Change>();
         }
+
+        private string PEQEffectIdColumnName(int EffectNumber) => $"{nameof(PEQSpell.effectid1).Remove(nameof(PEQSpell.effectid1).Length - 1)}{EffectNumber}";
+        private string PEQBaseValueColumnName(int EffectNumber) => $"{nameof(PEQSpell.effect_base_value1).Remove(nameof(PEQSpell.effect_base_value1).Length - 1)}{EffectNumber}";
+        private string PEQMaxValueColumnName(int EffectNumber) => $"{nameof(PEQSpell.max1).Remove(nameof(PEQSpell.max1).Length - 1)}{EffectNumber}";
+        private string PEQForumlaColumnName(int EffectNumber) => $"{nameof(PEQSpell.formula1).Remove(nameof(PEQSpell.formula1).Length - 1)}{EffectNumber}";
     }
 }

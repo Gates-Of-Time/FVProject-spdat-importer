@@ -27,14 +27,8 @@ namespace SpellParser.Commmands
             Logger.LogInformation("Create Manual Update Log");
             var updaters = new ISpellPropertyUpdater[] {
                 new NameUpdater()
-                , new EffectUpdater(1)
-                , new EffectUpdater(2)
-                , new EffectUpdater(3)
-                , new EffectUpdater(4)
-                , new EffectResetUpdater(5)
-                , new EffectResetUpdater(6)
-                , new EffectResetUpdater(7)
-                , new EffectResetUpdater(8)
+                , new EffectsUpdater()
+                , new EffectsResetUpdater()
             };
 
             var peqSpellUpdaters = PeqSpells.Select(x => SpellUpdater.From(x, updaters)).ToArray();
