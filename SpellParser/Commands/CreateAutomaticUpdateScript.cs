@@ -33,6 +33,7 @@ namespace SpellParser.Commmands
                 , new DurationUpdater()
                 , new ManaUpdater()
                 , new ResistUpdater()
+                , new RangeUpdater()
             };
 
             var peqSpellUpdaters = PeqSpells.Select(x => SpellUpdater.From(x, updaters)).ToArray();

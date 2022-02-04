@@ -7,9 +7,10 @@ namespace SpellParser.Core.Updater
 {
     internal class ResistUpdater : ISpellPropertyUpdater
     {
+        const string SathirsMesmerization = "834";
         public IEnumerable<Change> UpdateFrom(PEQSpell peqSpell, EQCasterSpell eqCasterSpell)
         {
-            if (peqSpell.goodEffect != "0" || peqSpell.spell_category == Category.MemBlur) return Array.Empty<Change>();
+            if (peqSpell.goodEffect != "0" || peqSpell.spell_category == Category.MemBlur || peqSpell.id == SathirsMesmerization) return Array.Empty<Change>();
 
             var changes = new List<Change>();
             string resistance = ResistTypeConverter(eqCasterSpell.Resistance);
