@@ -9,7 +9,7 @@ namespace SpellParser.Commmands
 {
     public class CreateManualUpdateLogCommand : ICommand
     {
-        public CreateManualUpdateLogCommand(IEnumerable<EQCasterSpell> eqCasterSpells, IEnumerable<PEQSpell> peqSpells, SpellParserReporter spellParserReporter, ILogger logger)
+        public CreateManualUpdateLogCommand(IEnumerable<EQCasterSpell> eqCasterSpells, IEnumerable<PEQSpell> peqSpells, MarkdownReporter spellParserReporter, ILogger logger)
         {
             EqCasterSpells = eqCasterSpells;
             PeqSpells = peqSpells;
@@ -19,7 +19,7 @@ namespace SpellParser.Commmands
 
         private IEnumerable<EQCasterSpell> EqCasterSpells { get; }
         private IEnumerable<PEQSpell> PeqSpells { get; }
-        private SpellParserReporter SpellParserReporter { get; }
+        private MarkdownReporter SpellParserReporter { get; }
         private ILogger Logger { get; }
 
         public void Execute()
@@ -49,7 +49,7 @@ namespace SpellParser.Commmands
 
             if (updatesCount > 0)
             {
-                SpellParserReporter.WriteSectionWithoutBullets("Manual Spell Updates", changes, x => ChangeTrackerReporter.ToMarkdown(x));
+                SpellParserReporter.AppendSection("Manual Spell Updates", changes, x => ChangeTrackerReporter.ToMarkdown(x));
             }
         }
     }

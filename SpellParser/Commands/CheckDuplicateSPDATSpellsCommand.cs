@@ -8,7 +8,7 @@ namespace SpellParser.Commmands
 {
     public class CheckDuplicateSPDATSpellsCommand : ICommand
     {
-        public CheckDuplicateSPDATSpellsCommand(IEnumerable<EQCasterSpell> eqCasterSpells, SpellParserReporter spellParserReporter, ILogger logger)
+        public CheckDuplicateSPDATSpellsCommand(IEnumerable<EQCasterSpell> eqCasterSpells, MarkdownReporter spellParserReporter, ILogger logger)
         {
             EqCasterSpells = eqCasterSpells;
             SpellParserReporter = spellParserReporter;
@@ -16,7 +16,7 @@ namespace SpellParser.Commmands
         }
 
         private IEnumerable<EQCasterSpell> EqCasterSpells { get; }
-        private SpellParserReporter SpellParserReporter { get; }
+        private MarkdownReporter SpellParserReporter { get; }
         private ILogger Logger { get; }
 
         public void Execute()
@@ -35,7 +35,7 @@ namespace SpellParser.Commmands
 
             if (duplicateCount > 0)
             {
-                SpellParserReporter.WriteSectionWithBullets("Duplicate SPDAT check", duplicates, x => x.Name);
+                SpellParserReporter.AppendBulletsSection("Duplicate SPDAT check", duplicates, x => x.Name);
             }
         }
     }

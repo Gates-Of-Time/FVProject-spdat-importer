@@ -9,7 +9,7 @@ namespace SpellParser.Commmands
 {
     public class CheckDoublicateSpellNameMatchesWithPEQCommand : ICommand
     {
-        public CheckDoublicateSpellNameMatchesWithPEQCommand(IEnumerable<EQCasterSpell> eqCasterSpells, IEnumerable<PEQSpell> peqSpells, SpellParserReporter spellParserReporter, ILogger logger)
+        public CheckDoublicateSpellNameMatchesWithPEQCommand(IEnumerable<EQCasterSpell> eqCasterSpells, IEnumerable<PEQSpell> peqSpells, MarkdownReporter spellParserReporter, ILogger logger)
         {
             EqCasterSpells = eqCasterSpells;
             PeqSpells = peqSpells;
@@ -19,7 +19,7 @@ namespace SpellParser.Commmands
 
         private IEnumerable<EQCasterSpell> EqCasterSpells { get; }
         private IEnumerable<PEQSpell> PeqSpells { get; }
-        private SpellParserReporter SpellParserReporter { get; }
+        private MarkdownReporter SpellParserReporter { get; }
         private ILogger Logger { get; }
 
         public void Execute()
@@ -57,7 +57,7 @@ namespace SpellParser.Commmands
 
             if (doublesCount > 0)
             {
-                SpellParserReporter.WriteSectionWithBullets("EQCaster spells have multiple hits in PEQ name mapping", doubles, x => $"{x.EQCasterSpell.Spell_Name} [ {string.Join(", ", x.PEQSpellUpdater.Select(y => y.PEQSpell.id))} ]");
+                SpellParserReporter.AppendBulletsSection("EQCaster spells have multiple hits in PEQ name mapping", doubles, x => $"{x.EQCasterSpell.Spell_Name} [ {string.Join(", ", x.PEQSpellUpdater.Select(y => y.PEQSpell.id))} ]");
             }
         }
     }

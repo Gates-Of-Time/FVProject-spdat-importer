@@ -7,46 +7,46 @@ using System.Text;
 
 namespace SpellParser.Infrastructure.Reporters
 {
-    public class SpellParserReporter : IDisposable
+    public class MarkdownReporter : IDisposable
     {
         private bool disposedValue;
         private readonly StringBuilder stringBuilder;
         private readonly IExportOptions options;
 
-        public SpellParserReporter(IExportOptions options)
+        public MarkdownReporter(IExportOptions options)
         {
             stringBuilder = new StringBuilder();
             this.options = options ?? throw new ArgumentNullException(nameof(options));
         }
 
-        public void Write(string reportText)
+        public void Append(string reportText)
         {
             stringBuilder.Append(reportText);
         }
 
-        public void WriteSection<T>(string header, IEnumerable<T> changes)
+        public void AppendSection<T>(string header, IEnumerable<T> changes)
         {
             stringBuilder.AppendLine($@"## {header}");
             stringBuilder.AppendLine($@"Occurences: {changes.Count()}");
             stringBuilder.AppendLine($@"");
         }
 
-        public void WriteSectionWithBullets<T>(string header, IEnumerable<T> changes, Func<T, string> reporter)
+        public void AppendSection<T>(string header, IEnumerable<T> changes, Func<T, string> reporter)
         {
-            WriteSection(header, changes);
+            AppendSection(header, changes);
             foreach (var change in changes)
             {
-                stringBuilder.AppendLine($@"+ {reporter(change)}");
+                stringBuilder.AppendLine($@"{reporter(change)}");
             }
             stringBuilder.AppendLine($@"");
         }
 
-        public void WriteSectionWithoutBullets<T>(string header, IEnumerable<T> changes, Func<T, string> reporter)
+        public void AppendBulletsSection<T>(string header, IEnumerable<T> changes, Func<T, string> reporter)
         {
-            WriteSection(header, changes);
+            AppendSection(header, changes);
             foreach (var change in changes)
             {
-                stringBuilder.AppendLine($@"{reporter(change)}");
+                stringBuilder.AppendLine($@"+ {reporter(change)}");
             }
             stringBuilder.AppendLine($@"");
         }
@@ -68,7 +68,7 @@ namespace SpellParser.Infrastructure.Reporters
                 {
                     var filePath = options.ExportLocation;
                     EnsureDirectoryExists(filePath);
-                    File.WriteAllText($@"{filePath}\ParseReport.md", stringBuilder.ToString());
+                    File.WriteAllText($@"{filePath}\Report.md", stringBuilder.ToString());
                 }
 
                 // TODO: free unmanaged resources (unmanaged objects) and override finalizer

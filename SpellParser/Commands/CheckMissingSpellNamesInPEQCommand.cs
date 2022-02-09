@@ -9,7 +9,7 @@ namespace SpellParser.Commmands
 {
     public class CheckMissingSpellNamesInPEQCommand : ICommand
     {
-        public CheckMissingSpellNamesInPEQCommand(IEnumerable<EQCasterSpell> eqCasterSpells, IEnumerable<PEQSpell> peqSpells, SpellParserReporter spellParserReporter, ILogger logger)
+        public CheckMissingSpellNamesInPEQCommand(IEnumerable<EQCasterSpell> eqCasterSpells, IEnumerable<PEQSpell> peqSpells, MarkdownReporter spellParserReporter, ILogger logger)
         {
             EqCasterSpells = eqCasterSpells;
             PeqSpells = peqSpells;
@@ -19,7 +19,7 @@ namespace SpellParser.Commmands
 
         private IEnumerable<EQCasterSpell> EqCasterSpells { get; }
         private IEnumerable<PEQSpell> PeqSpells { get; }
-        private SpellParserReporter SpellParserReporter { get; }
+        private MarkdownReporter SpellParserReporter { get; }
         private ILogger Logger { get; }
 
         public void Execute()
@@ -36,7 +36,7 @@ namespace SpellParser.Commmands
 
             if (errorsCount > 0)
             {
-                SpellParserReporter.WriteSectionWithBullets("Missing spell names in PEQ", errors, x => x);
+                SpellParserReporter.AppendBulletsSection("Missing spell names in PEQ", errors, x => x);
             }
         }
     }

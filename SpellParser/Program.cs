@@ -23,7 +23,7 @@ namespace SpellParser
 
             var settings = config.GetRequiredSection("Settings").Get<Settings>();
 
-            using var reporter = new SpellParserReporter(settings.Export);
+            using var reporter = new MarkdownReporter(settings.Export);
 
             var eqCasterSpellsRepository = new EQCasterSpellRepository();
             var eqCasterSpells = eqCasterSpellsRepository.GetAll(settings.Import, settings.Expansion);
