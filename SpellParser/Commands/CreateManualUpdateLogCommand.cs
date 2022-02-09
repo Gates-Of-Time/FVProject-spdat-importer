@@ -32,11 +32,15 @@ namespace SpellParser.Commmands
             };
 
             var peqSpellUpdaters = PeqSpells.Select(x => SpellUpdater.From(x, updaters)).ToArray();
-            var updateSpells = EqCasterSpells.Select(x => new
-            {
-                EQCasterSpell = x,
-                PEQSpellUpdater = peqSpellUpdaters.Where(y => x.Spell_Name.ToLower() == y.PEQSpell.name.ToLower()).ToArray()
-            }).ToArray();
+            var updateSpells = EqCasterSpells
+                .GroupBy(s => s.Spell_Name)
+                .Where(g => g.Count() == 1)
+                .Select(g => g.First())
+                .Select(x => new
+                {
+                    EQCasterSpell = x,
+                    PEQSpellUpdater = peqSpellUpdaters.Where(y => x.Spell_Name.ToLower() == y.PEQSpell.name.ToLower()).ToArray()
+                }).ToArray();
 
             foreach (var item in updateSpells.Where(x => x.PEQSpellUpdater.Count() == 1))
             {
