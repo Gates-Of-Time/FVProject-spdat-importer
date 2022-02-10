@@ -1,8 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using SpellParser.Core;
 using SpellParser.Infrastructure.Reporters;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace SpellParser.Commmands
 {
@@ -23,12 +21,12 @@ namespace SpellParser.Commmands
         {
             Logger.LogInformation("Check Duplicate SPDAT Spells");
             var duplicates = EqCasterSpells.GroupBy(s => s.Spell_Name)
-                           .Select(group => new
-                           {
-                               Name = group.Key,
-                               Count = group.Count()
-                           })
-                           .Where(g => g.Count > 1);
+                               .Select(group => new
+                               {
+                                   Name = group.Key,
+                                   Count = group.Count()
+                               })
+                               .Where(g => g.Count > 1);
 
             int duplicateCount = duplicates.Count();
             Logger.LogInformation($"Duplicate SPDAT spells <{duplicateCount}>");

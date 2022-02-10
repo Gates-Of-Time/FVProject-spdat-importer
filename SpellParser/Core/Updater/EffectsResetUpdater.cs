@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace SpellParser.Core.Updater
+﻿namespace SpellParser.Core.Updater
 {
     internal class EffectsResetUpdater : ISpellPropertyUpdater
     {

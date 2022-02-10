@@ -2,14 +2,12 @@
 using SpellParser.Core;
 using SpellParser.Core.Updater;
 using SpellParser.Infrastructure.Reporters;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace SpellParser.Commmands
 {
-    public class CheckDoublicateSpellNameMatchesWithPEQCommand : ICommand
+    public class CheckDuplicateSpellNameMatchesCommand : ICommand
     {
-        public CheckDoublicateSpellNameMatchesWithPEQCommand(IEnumerable<EQCasterSpell> eqCasterSpells, IEnumerable<PEQSpell> peqSpells, MarkdownReporter spellParserReporter, ILogger logger)
+        public CheckDuplicateSpellNameMatchesCommand(IEnumerable<EQCasterSpell> eqCasterSpells, IEnumerable<PEQSpell> peqSpells, MarkdownReporter spellParserReporter, ILogger logger)
         {
             EqCasterSpells = eqCasterSpells;
             PeqSpells = peqSpells;

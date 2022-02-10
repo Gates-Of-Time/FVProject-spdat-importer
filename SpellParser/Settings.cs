@@ -1,5 +1,4 @@
 ﻿using SpellParser.Core;
-using System.Collections.Generic;
 
 namespace SpellParser
 {

@@ -1,16 +1,10 @@
 ﻿using SpellParser.Core;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using System.Reflection;
 
 namespace SpellParser.Infrastructure.Data
 {
     public class PEQSpellRepository
     {
-        private const int EqCasterMaxId = 2010;
-
         public IEnumerable<PEQSpell> GetAll(IImportOptions options)
         {
             var values = File.ReadAllLines(options.SpellsUSFilePath)

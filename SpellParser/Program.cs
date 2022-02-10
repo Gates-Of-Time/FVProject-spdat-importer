@@ -34,7 +34,7 @@ namespace SpellParser
             var commands = new ICommand[] {
                 new CheckDuplicateSPDATSpellsCommand(eqCasterSpells, reporter, logger)
                 , new CheckMissingSpellNamesInPEQCommand(eqCasterSpells, peqSpells, reporter, logger)
-                , new CheckDoublicateSpellNameMatchesWithPEQCommand(eqCasterSpells, peqSpells, reporter, logger)
+                , new CheckDuplicateSpellNameMatchesCommand(eqCasterSpells, peqSpells, reporter, logger)
                 , new CreateAutomaticUpdateScript(eqCasterSpells, peqSpells, reporter, settings.Export, logger)
                 , new CreateManualUpdateLogCommand(eqCasterSpells, peqSpells, reporter, logger)
             };

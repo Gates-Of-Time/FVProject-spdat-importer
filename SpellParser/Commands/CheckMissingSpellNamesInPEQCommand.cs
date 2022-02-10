@@ -2,8 +2,6 @@
 using SpellParser.Core;
 using SpellParser.Core.Updater;
 using SpellParser.Infrastructure.Reporters;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace SpellParser.Commmands
 {

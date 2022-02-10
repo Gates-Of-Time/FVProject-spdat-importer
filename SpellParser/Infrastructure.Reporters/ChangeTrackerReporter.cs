@@ -1,5 +1,4 @@
 ﻿using SpellParser.Core;
-using System.Linq;
 
 namespace SpellParser.Infrastructure.Reporters
 {

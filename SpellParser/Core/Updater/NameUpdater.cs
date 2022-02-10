@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace SpellParser.Core.Updater
+﻿namespace SpellParser.Core.Updater
 {
     public class NameUpdater : ISpellPropertyUpdater
     {

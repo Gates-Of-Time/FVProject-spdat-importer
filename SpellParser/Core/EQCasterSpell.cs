@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace SpellParser.Core
+﻿namespace SpellParser.Core
 {
     public class EQCasterSpell
     {

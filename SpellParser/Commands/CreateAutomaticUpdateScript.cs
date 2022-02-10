@@ -2,8 +2,6 @@
 using SpellParser.Core;
 using SpellParser.Core.Updater;
 using SpellParser.Infrastructure.Reporters;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace SpellParser.Commmands
 {
@@ -44,7 +42,7 @@ namespace SpellParser.Commmands
                 .Select(x => new
                     {
                         EQCasterSpell = x,
-                        PEQSpellUpdater = peqSpellUpdaters.Where(y => x.Spell_Name.ToLower() == y.PEQSpell.name.ToLower()).ToArray()
+                        PEQSpellUpdater = peqSpellUpdaters.Where(y => x.Spell_Name.ToLower() == y.PEQSpell.name.ToLower()).OrderBy(u => u.PEQSpell.id).ToArray()
                     }).ToArray();
 
             foreach (var item in updateSpells.Where(x => x.PEQSpellUpdater.Count() == 1))

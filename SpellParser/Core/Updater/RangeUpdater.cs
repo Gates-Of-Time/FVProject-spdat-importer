@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-
-namespace SpellParser.Core.Updater
+﻿namespace SpellParser.Core.Updater
 {
     public class RangeUpdater : ISpellPropertyUpdater
     {

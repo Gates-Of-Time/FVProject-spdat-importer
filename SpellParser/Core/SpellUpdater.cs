@@ -1,7 +1,4 @@
 ﻿using SpellParser.Core.Updater;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace SpellParser.Core
 {

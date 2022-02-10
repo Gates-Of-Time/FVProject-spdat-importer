@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace SpellParser.Core
+﻿namespace SpellParser.Core
 {
     public class ChangeTracker
     {

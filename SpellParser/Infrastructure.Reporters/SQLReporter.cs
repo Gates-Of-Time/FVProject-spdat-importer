@@ -1,8 +1,4 @@
 ﻿using SpellParser.Core;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 
 namespace SpellParser.Infrastructure.Reporters
 {
@@ -30,22 +26,22 @@ namespace SpellParser.Infrastructure.Reporters
         }
 
         private static Func<ChangeTracker, string> SQL = (ChangeTracker changeTracker) =>
-          {
-              var sql = $@"-- {changeTracker.Name}
+            {
+                var sql = $@"-- {changeTracker.Name}
 UPDATE spells_new SET
 {string.Join("\n,", changeTracker.Changes.Select(x => $"{x.Name} = {GetSqlValue(x.Name, x.NewValue)}"))}
 WHERE id = {changeTracker.Id};";
-              return sql;
-          };
+                return sql;
+            };
 
         public static Func<ChangeTracker, string> UndoSQL = (ChangeTracker changeTracker) =>
-          {
-              var sql = $@"-- {changeTracker.Name}
+            {
+                var sql = $@"-- {changeTracker.Name}
 UPDATE spells_new SET
 {string.Join("\n,", changeTracker.Changes.Select(x => $"{x.Name} = {GetSqlValue(x.Name, x.OldValue)}"))}
 WHERE id = {changeTracker.Id};";
-              return sql;
-          };
+                return sql;
+            };
 
         private static string GetSqlValue(string columnName, string value)
         {
