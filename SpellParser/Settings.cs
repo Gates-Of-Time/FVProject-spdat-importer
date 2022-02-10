@@ -1,4 +1,5 @@
 ﻿using SpellParser.Core;
+using System.Collections.Generic;
 
 namespace SpellParser
 {
@@ -20,6 +21,7 @@ namespace SpellParser
             public string EQCasterExportFilePath { get; set; }
             public string SpellsUSFilePath { get; set; }
             public int MaxSpellId { get; set; }
+            public IEnumerable<int> ExcludeSpellIds { get; set; }
         }
 
         public class ExportOptions : IExportOptions

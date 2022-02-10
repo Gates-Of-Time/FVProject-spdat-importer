@@ -16,7 +16,8 @@ namespace SpellParser.Infrastructure.Data
             var values = File.ReadAllLines(options.SpellsUSFilePath)
                                         .Select(v => Parse(v))
                                         .Where(s => string.IsNullOrWhiteSpace(s.name) == false)
-                                        .Where(s => Convert.ToInt32(s.id) <= options.MaxSpellId)
+                                        .Where(s => s.Id <= options.MaxSpellId)
+                                        .Where(s => !options.ExcludeSpellIds.Contains(s.Id))
                                         .ToArray();
             return values;
         }

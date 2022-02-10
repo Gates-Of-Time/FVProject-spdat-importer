@@ -251,6 +251,8 @@
             new SpellEffect() { EffectId = effectid8,  BaseValue = effect_base_value4, MaxValue = max8, LimitValue = effect_limit_value8, Formula = formula8},
         };
 
+        public int Id => Convert.ToInt32(id);
+
         public string WAR => "";
         public string CLR => classes1;
         public string PAL => classes8;
