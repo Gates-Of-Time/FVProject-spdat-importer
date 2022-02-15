@@ -7,18 +7,25 @@ namespace SpellParser.Commmands
 {
     public class CheckDuplicateSpellNameMatchesCommand : ICommand
     {
-        public CheckDuplicateSpellNameMatchesCommand(IEnumerable<EQCasterSpell> eqCasterSpells, IEnumerable<PEQSpell> peqSpells, MarkdownReporter spellParserReporter, ILogger logger)
+        public CheckDuplicateSpellNameMatchesCommand(IEnumerable<EQCasterSpell> eqCasterSpells, IEnumerable<PEQSpell> peqSpells, MarkdownReporter spellParserReporter, IImportOptions importOptions, ILogger logger)
         {
             EqCasterSpells = eqCasterSpells;
             PeqSpells = peqSpells;
             SpellParserReporter = spellParserReporter;
+            ImportOptions = importOptions;
             Logger = logger;
         }
 
         private IEnumerable<EQCasterSpell> EqCasterSpells { get; }
         private IEnumerable<PEQSpell> PeqSpells { get; }
         private MarkdownReporter SpellParserReporter { get; }
+        private IImportOptions ImportOptions { get; }
         private ILogger Logger { get; }
+
+        private bool SkipUpdateFilter(EQCasterSpell eqCasterSpell)
+        {
+            return ImportOptions.ExcludeSpellNames.Contains(eqCasterSpell.Spell_Name);
+        }
 
         public void Execute()
         {
@@ -29,8 +36,8 @@ namespace SpellParser.Commmands
                 , new DurationUpdater()
                 , new ManaUpdater()
                 , new ResistUpdater()
-                , new EffectsUpdater()
-                , new EffectsResetUpdater()
+                , new EffectsUpdater(SkipUpdateFilter)
+                , new EffectsResetUpdater(SkipUpdateFilter)
             };
 
             var peqSpellUpdaters = PeqSpells.Select(x => SpellUpdater.From(x, updaters)).ToArray();

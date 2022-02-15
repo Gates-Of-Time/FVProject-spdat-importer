@@ -21,6 +21,8 @@ namespace SpellParser
             public string SpellsUSFilePath { get; set; }
             public int MaxSpellId { get; set; }
             public IEnumerable<int> ExcludeSpellIds { get; set; }
+            public IEnumerable<string> ExcludateAutomaticUpdatesSpellNames { get; set; }
+            public IEnumerable<string> ExcludeSpellNames { get; set; }
         }
 
         public class ExportOptions : IExportOptions

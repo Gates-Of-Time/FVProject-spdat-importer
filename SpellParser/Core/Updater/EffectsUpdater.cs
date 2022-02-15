@@ -2,14 +2,24 @@
 {
     internal class EffectsUpdater : ISpellPropertyUpdater
     {
-        public IEnumerable<Change> UpdateFrom(PEQSpell rof2Spell, EQCasterSpell eqCasterSpell)
+        public EffectsUpdater(Func<EQCasterSpell, bool> skipUpdateFilter)
         {
-            var changes = new List<Change>();
+            SkipUpdate = skipUpdateFilter;
+        }
 
+        public Func<EQCasterSpell, bool> SkipUpdate { get; }
+
+        public IEnumerable<Change> UpdateFrom(PEQSpell peqSpell, EQCasterSpell eqCasterSpell)
+        {
+            if (SkipUpdate(eqCasterSpell)) { 
+                return Array.Empty<Change>();
+            }
+
+            var changes = new List<Change>();
             var effectChange = new EffectUpdater();
             for (int i = 0; i < eqCasterSpell.SpellEffects.Length; i++)
             {
-                changes.AddRange(effectChange.UpdateFrom(i, rof2Spell, rof2Spell.SpellEffects[i], eqCasterSpell.SpellEffects[i]));
+                changes.AddRange(effectChange.UpdateFrom(i + 1, peqSpell, peqSpell.SpellEffects[i], eqCasterSpell.SpellEffects[i]));
             }
 
             return changes;

@@ -7,26 +7,33 @@ namespace SpellParser.Commmands
 {
     public class CreateManualUpdateLogCommand : ICommand
     {
-        public CreateManualUpdateLogCommand(IEnumerable<EQCasterSpell> eqCasterSpells, IEnumerable<PEQSpell> peqSpells, MarkdownReporter spellParserReporter, ILogger logger)
+        public CreateManualUpdateLogCommand(IEnumerable<EQCasterSpell> eqCasterSpells, IEnumerable<PEQSpell> peqSpells, MarkdownReporter spellParserReporter, IImportOptions importOptions, ILogger logger)
         {
             EqCasterSpells = eqCasterSpells;
             PeqSpells = peqSpells;
             SpellParserReporter = spellParserReporter;
+            ImportOptions = importOptions;
             Logger = logger;
         }
 
         private IEnumerable<EQCasterSpell> EqCasterSpells { get; }
         private IEnumerable<PEQSpell> PeqSpells { get; }
         private MarkdownReporter SpellParserReporter { get; }
+        private IImportOptions ImportOptions { get; }
         private ILogger Logger { get; }
+
+        private bool SkipUpdateFilter(EQCasterSpell eqCasterSpell)
+        {
+            return ImportOptions.ExcludateAutomaticUpdatesSpellNames.Contains(eqCasterSpell.Spell_Name) == false && ImportOptions.ExcludeSpellNames.Contains(eqCasterSpell.Spell_Name);
+        }
 
         public void Execute()
         {
             Logger.LogInformation("Create Manual Update Log");
             var updaters = new ISpellPropertyUpdater[] {
                 new NameUpdater()
-                , new EffectsUpdater()
-                , new EffectsResetUpdater()
+                , new EffectsUpdater(SkipUpdateFilter)
+                , new EffectsResetUpdater(SkipUpdateFilter)
             };
 
             var peqSpellUpdaters = PeqSpells.Select(x => SpellUpdater.From(x, updaters)).ToArray();

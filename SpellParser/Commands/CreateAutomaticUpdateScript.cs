@@ -7,20 +7,26 @@ namespace SpellParser.Commmands
 {
     public class CreateAutomaticUpdateScript : ICommand
     {
-        public CreateAutomaticUpdateScript(IEnumerable<EQCasterSpell> eqCasterSpells, IEnumerable<PEQSpell> peqSpells, MarkdownReporter spellParserReporter, IExportOptions options, ILogger logger)
+        public CreateAutomaticUpdateScript(IEnumerable<EQCasterSpell> eqCasterSpells, IEnumerable<PEQSpell> peqSpells, MarkdownReporter spellParserReporter, IExportOptions exportOptions, IImportOptions importOptions, ILogger logger)
         {
             EqCasterSpells = eqCasterSpells;
             PeqSpells = peqSpells;
             SpellParserReporter = spellParserReporter;
-            Options = options;
+            ExportOptions = exportOptions;
+            ImportOptions = importOptions;
             Logger = logger;
         }
 
         private IEnumerable<EQCasterSpell> EqCasterSpells { get; }
         private IEnumerable<PEQSpell> PeqSpells { get; }
         private MarkdownReporter SpellParserReporter { get; }
-        private IExportOptions Options { get; }
+        private IExportOptions ExportOptions { get; }
+        private IImportOptions ImportOptions { get; }
         private ILogger Logger { get; }
+
+        private bool SkipUpdateFilter(EQCasterSpell eqCasterSpell) {
+            return ImportOptions.ExcludateAutomaticUpdatesSpellNames.Union(ImportOptions.ExcludeSpellNames).Contains(eqCasterSpell.Spell_Name);
+        }
 
         public void Execute()
         {
@@ -32,6 +38,8 @@ namespace SpellParser.Commmands
                 , new ManaUpdater()
                 , new ResistUpdater()
                 , new RangeUpdater()
+                , new EffectsUpdater(SkipUpdateFilter)
+                , new EffectsResetUpdater(SkipUpdateFilter)
             };
 
             var peqSpellUpdaters = PeqSpells.Select(x => SpellUpdater.From(x, updaters)).ToArray();
@@ -45,7 +53,7 @@ namespace SpellParser.Commmands
                         PEQSpellUpdater = peqSpellUpdaters.Where(y => x.Spell_Name.ToLower() == y.PEQSpell.name.ToLower()).OrderBy(u => u.PEQSpell.id).ToArray()
                     }).ToArray();
 
-            foreach (var item in updateSpells.Where(x => x.PEQSpellUpdater.Count() == 1))
+            foreach (var item in updateSpells.Where(x => x.PEQSpellUpdater.Any()))
             {
                 item.PEQSpellUpdater.First().UpdateFrom(item.EQCasterSpell);
             }
@@ -56,7 +64,7 @@ namespace SpellParser.Commmands
 
             if (updatesCount > 0)
             {
-                SQLReporter.WriteToDisk(Options, changes.Select(u => u.ChangeTracker));
+                SQLReporter.WriteToDisk(ExportOptions, changes.Select(u => u.ChangeTracker));
                 SpellParserReporter.AppendSection("Automatic SQL update scripts created", changes);
             }
         }

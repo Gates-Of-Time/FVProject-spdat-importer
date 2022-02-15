@@ -6,5 +6,7 @@
         string SpellsUSFilePath { get; }
         int MaxSpellId { get; }
         IEnumerable<int> ExcludeSpellIds { get; }
+        IEnumerable<string> ExcludateAutomaticUpdatesSpellNames { get; }
+        IEnumerable<string> ExcludeSpellNames { get; }
     }
 }

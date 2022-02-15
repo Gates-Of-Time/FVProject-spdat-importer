@@ -3,6 +3,8 @@
     public class EffectType
     {
         public const string SE_CHA = "10";
+        public const string SE_AttackSpeed = "11";
+        public const string SE_Stun = "21";
         public const string SE_Charm = "22";
         public const string SE_Fear = "23";
         public const string SE_Stamina = "24";

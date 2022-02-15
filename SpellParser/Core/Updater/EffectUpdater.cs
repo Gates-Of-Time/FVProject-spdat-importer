@@ -4,12 +4,19 @@ namespace SpellParser.Core.Updater
 {
     internal class EffectUpdater
     {
+        private static string[] SkipPEQCategories = new[] {
+            Category.SummonCorpse
+            , Category.MemBlur
+            , Category.Gate
+        };
+
         private static string[] SkipPEQEffectIds = new[] {
             EffectType.SE_Charm
             , EffectType.SE_SummonCorpse
             , EffectType.SE_Illusion
             , EffectType.SE_SpellTrigger
             , EffectType.SE_Hate
+            , EffectType.SE_Mez
         };
 
         private static string[] SkipSPDATEffectIds = new[] {
@@ -31,19 +38,19 @@ namespace SpellParser.Core.Updater
 
 
             string effectId = peqEffectId == EffectType.SE_Mez ? peqEffectId : AttribConverter(eqCasterEffectId, eqCasterBaseValue);
-            if (SkipSPDATEffectIds.Contains(effectId) || SkipPEQEffectIds.Contains(peqEffectId) || peqSpell.spell_category == Category.SummonCorpse) return Array.Empty<Change>();
+            if (SkipSPDATEffectIds.Contains(effectId) || SkipPEQEffectIds.Contains(peqEffectId) || SkipPEQCategories.Contains(peqSpell.spell_category)) return Array.Empty<Change>();
 
-            if (peqEffectId != effectId && !(effectId == EffectType.SE_Blank && peqEffectId == EffectType.SE_CHA) && !(effectId == EffectType.SE_DiseaseCounter && peqSpell.spell_category == Category.SlowSingle))
+            if (peqEffectId != effectId && !(effectId == EffectType.SE_Blank && peqEffectId == EffectType.SE_CHA) && !(peqEffectId == EffectType.SE_DiseaseCounter && peqSpell.spell_category == Category.SlowSingle))
             {
                 changes.Add(new Change { Name = PEQEffectIdColumnName(effectNumber), OldValue = peqEffectId, NewValue = effectId });
             }
 
-            if (eqCasterEffectId != "" && eqCasterBaseValue != "" && peqBaseValue != eqCasterBaseValue)
+            if ( eqCasterEffectId != "" && eqCasterBaseValue != "" && peqBaseValue != eqCasterBaseValue)
             {
                 changes.Add(new Change { Name = PEQBaseValueColumnName(effectNumber), OldValue = peqBaseValue, NewValue = eqCasterBaseValue });
             }
 
-            if (effectId != EffectType.SE_Fear && effectId != EffectType.SE_Mez && effectId != EffectType.SE_ChangeFrenzyRad && effectId != EffectType.SE_Harmony && eqCasterEffectId != "" && eqCasterMaxValue != "" && peqMaxValue != eqCasterMaxValue && !(HasSameBaseAndMaxValueForHPEffect(effectId, peqBaseValue, eqCasterMaxValue)))
+            if (effectId != EffectType.SE_Stun && effectId != EffectType.SE_Fear && effectId != EffectType.SE_ChangeFrenzyRad && effectId != EffectType.SE_Harmony && !(peqEffectId == EffectType.SE_AttackSpeed && peqSpell.spell_category == Category.SlowSingle) && eqCasterEffectId != "" && eqCasterMaxValue != "" && peqMaxValue != eqCasterMaxValue && !(HasSameBaseAndMaxValueForHPEffect(effectId, peqBaseValue, eqCasterMaxValue)))
             {
                 changes.Add(new Change { Name = PEQMaxValueColumnName(effectNumber), OldValue = peqMaxValue, NewValue = eqCasterMaxValue });
             }
@@ -71,8 +78,6 @@ namespace SpellParser.Core.Updater
         {
             return (effectId == "0" && Math.Abs(Convert.ToInt32(peqBaseValue)) == Math.Abs(Convert.ToInt32(eqCasterMaxValue)));
         }
-
-
 
         // PEQ base formula types: https://docs.eqemu.io/server/spells/base-value-formulas/
         private string FormulaConverter(string eqCasterFormula)
