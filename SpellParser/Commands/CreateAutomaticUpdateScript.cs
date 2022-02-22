@@ -7,12 +7,12 @@ namespace SpellParser.Commmands
 {
     public class CreateAutomaticUpdateScript : ICommand
     {
-        public CreateAutomaticUpdateScript(IEnumerable<EQCasterSpell> eqCasterSpells, IEnumerable<PEQSpell> peqSpells, MarkdownReporter spellParserReporter, IExportOptions exportOptions, IImportOptions importOptions, ILogger logger)
+        public CreateAutomaticUpdateScript(IEnumerable<EQCasterSpell> eqCasterSpells, IEnumerable<PEQSpell> peqSpells, MarkdownReporter spellParserReporter, SQLReporter sqlReporter, IImportOptions importOptions, ILogger logger)
         {
             EqCasterSpells = eqCasterSpells;
             PeqSpells = peqSpells;
             SpellParserReporter = spellParserReporter;
-            ExportOptions = exportOptions;
+            SQLReporter = sqlReporter;
             ImportOptions = importOptions;
             Logger = logger;
         }
@@ -20,7 +20,7 @@ namespace SpellParser.Commmands
         private IEnumerable<EQCasterSpell> EqCasterSpells { get; }
         private IEnumerable<PEQSpell> PeqSpells { get; }
         private MarkdownReporter SpellParserReporter { get; }
-        private IExportOptions ExportOptions { get; }
+        private SQLReporter SQLReporter { get; }
         private IImportOptions ImportOptions { get; }
         private ILogger Logger { get; }
 
@@ -64,7 +64,7 @@ namespace SpellParser.Commmands
 
             if (updatesCount > 0)
             {
-                SQLReporter.WriteToDisk(ExportOptions, changes.Select(u => u.ChangeTracker));
+                SQLReporter.Write(changes.Select(u => u.ChangeTracker));
                 SpellParserReporter.AppendSection("Automatic SQL update scripts created", changes);
             }
         }

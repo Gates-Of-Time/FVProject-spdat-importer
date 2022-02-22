@@ -1,19 +1,25 @@
 ﻿using SpellParser.Core;
+using System.Text;
 
 namespace SpellParser.Infrastructure.Reporters
 {
-    public class SQLReporter
+    public class SQLReporter: IDisposable
     {
-        public static void WriteToDisk(IExportOptions options, IEnumerable<ChangeTracker> updates)
+        public SQLReporter(IExportOptions options)
         {
-            var filePath = options.ExportLocation;
-            EnsureDirectoryExists(filePath);
+            Options = options;
+        }
 
-            var sql = string.Join("\n\n", updates.Select(SQL));
-            File.WriteAllText($@"{filePath}\SqlUpdates.sql", sql);
+        private bool DisposedValue { get; set; }
+        private StringBuilder Updates { get; } = new StringBuilder();
+        private StringBuilder Rollbacks { get; } = new StringBuilder();
+        
+        public IExportOptions Options { get; }
 
-            var undoAql = string.Join("\n\n", updates.Select(UndoSQL));
-            File.WriteAllText($@"{filePath}\SqlRollback.sql", undoAql);
+        public void Write(IEnumerable<ChangeTracker> updates)
+        {
+            Updates.AppendJoin("\n\n", updates.Select(SQL));
+            Rollbacks.AppendJoin("\n\n", updates.Select(UndoSQL));
         }
 
         private static void EnsureDirectoryExists(string configFilePath)
@@ -29,7 +35,7 @@ namespace SpellParser.Infrastructure.Reporters
             {
                 var sql = $@"-- {changeTracker.Name}
 UPDATE spells_new SET
-{string.Join("\n,", changeTracker.Changes.Select(x => $"{x.Name} = {GetSqlValue(x.Name, x.NewValue)}"))}
+{string.Join("\n,", changeTracker.Changes.Select(x => $"`{x.Name}` = {GetSqlValue(x.Name, x.NewValue)}"))}
 WHERE id = {changeTracker.Id};";
                 return sql;
             };
@@ -38,7 +44,7 @@ WHERE id = {changeTracker.Id};";
             {
                 var sql = $@"-- {changeTracker.Name}
 UPDATE spells_new SET
-{string.Join("\n,", changeTracker.Changes.Select(x => $"{x.Name} = {GetSqlValue(x.Name, x.OldValue)}"))}
+{string.Join("\n,", changeTracker.Changes.Select(x => $"`{x.Name}` = {GetSqlValue(x.Name, x.OldValue)}"))}
 WHERE id = {changeTracker.Id};";
                 return sql;
             };
@@ -51,6 +57,31 @@ WHERE id = {changeTracker.Id};";
             }
 
             return value;
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!DisposedValue)
+            {
+                if (disposing)
+                {
+                    var filePath = Options.ExportLocation;
+                    EnsureDirectoryExists(filePath);
+                    File.WriteAllText($@"{filePath}\SqlUpdates.sql", $"{Updates}");
+                    File.WriteAllText($@"{filePath}\SqlRollback.sql", $"{Rollbacks}");
+                }
+
+                // TODO: free unmanaged resources (unmanaged objects) and override finalizer
+                // TODO: set large fields to null
+                DisposedValue = true;
+            }
+        }
+
+        public void Dispose()
+        {
+            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
         }
     }
 }

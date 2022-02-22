@@ -22,6 +22,9 @@
             { "Malaisement", "Malisement" },
             { "Malaise", "Malise" },
             { "Largo's Assonant Binding", "Largo's Absonant Binding" },
+            { "Cantata of Replenishment", "Cantana of Replenishment" },
+            { "Cantata of Soothing", "Cantana of Soothing" },
+            { "O`Keil's Flickering Flame", "O'Keils Flickering Flame" },
         };
 
         public IEnumerable<Change> UpdateFrom(PEQSpell rof2Spell, EQCasterSpell eqCasterSpell)

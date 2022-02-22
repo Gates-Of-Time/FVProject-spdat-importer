@@ -8,6 +8,7 @@ namespace SpellParser.Core.Updater
             Category.SummonCorpse
             , Category.MemBlur
             , Category.Gate
+            , Category.Translocate
         };
 
         private static string[] SkipPEQEffectIds = new[] {
@@ -17,6 +18,9 @@ namespace SpellParser.Core.Updater
             , EffectType.SE_SpellTrigger
             , EffectType.SE_Hate
             , EffectType.SE_Mez
+            , EffectType.SE_Invisibility2
+            , EffectType.SE_InvisVsUndead2
+            , EffectType.SE_PoisonCounter
         };
 
         private static string[] SkipSPDATEffectIds = new[] {

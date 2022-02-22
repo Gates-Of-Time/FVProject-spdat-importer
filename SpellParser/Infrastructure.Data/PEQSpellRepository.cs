@@ -5,15 +5,33 @@ namespace SpellParser.Infrastructure.Data
 {
     public class PEQSpellRepository
     {
-        public IEnumerable<PEQSpell> GetAll(IImportOptions options)
+        public IEnumerable<PEQSpell> GetAll(IImportOptions options, Expansion expansion)
         {
             var values = File.ReadAllLines(options.SpellsUSFilePath)
                                         .Select(v => Parse(v))
                                         .Where(s => string.IsNullOrWhiteSpace(s.name) == false)
-                                        .Where(s => s.Id <= options.MaxSpellId)
+                                        .Where(IsInExpansion(expansion))
                                         .Where(s => !options.ExcludeSpellIds.Contains(s.Id))
                                         .ToArray();
             return values;
+        }
+
+        private static Func<PEQSpell, bool> IsInExpansion(Expansion expansion)
+        {
+            switch (expansion)
+            {
+                case Expansion.Original:
+                    return x => x.Id < 1830;
+
+                case Expansion.Kunark:
+                    return x => x.Id < 2100;
+
+                case Expansion.Velious:
+                    return x => x.Id < 2100;
+
+                default:
+                    throw new Exception($"Un-handled expansions <{expansion}>");
+            }
         }
 
         private PEQSpell Parse(string line)

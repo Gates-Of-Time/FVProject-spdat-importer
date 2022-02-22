@@ -24,18 +24,19 @@ namespace SpellParser
             var settings = config.GetRequiredSection("Settings").Get<Settings>();
 
             using var reporter = new MarkdownReporter(settings.Export);
+            using var sqlReport = new SQLReporter(settings.Export);
 
             var eqCasterSpellsRepository = new EQCasterSpellRepository();
             var eqCasterSpells = eqCasterSpellsRepository.GetAll(settings.Import, settings.Expansion);
 
             var peqSpellsRepository = new PEQSpellRepository();
-            var peqSpells = peqSpellsRepository.GetAll(settings.Import);
+            var peqSpells = peqSpellsRepository.GetAll(settings.Import, settings.Expansion);
 
             var commands = new ICommand[] {
                 new CheckDuplicateSPDATSpellsCommand(eqCasterSpells, reporter, logger)
                 , new CheckMissingSpellNamesInPEQCommand(eqCasterSpells, peqSpells, reporter, logger)
                 , new CheckDuplicateSpellNameMatchesCommand(eqCasterSpells, peqSpells, reporter, settings.Import, logger)
-                , new CreateAutomaticUpdateScript(eqCasterSpells, peqSpells, reporter, settings.Export, settings.Import, logger)
+                , new CreateAutomaticUpdateScript(eqCasterSpells, peqSpells, reporter, sqlReport, settings.Import, logger)
                 , new CreateManualUpdateLogCommand(eqCasterSpells, peqSpells, reporter, settings.Import, logger)
             };
 

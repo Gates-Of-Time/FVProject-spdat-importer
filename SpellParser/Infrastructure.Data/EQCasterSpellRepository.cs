@@ -13,7 +13,7 @@ namespace SpellParser.Infrastructure.Data
                                        .Where(HasValidSpellName)
                                        .Where(HasValidSkill)
                                        .Where(HasValidAttrib1)
-                                       .Where(ExpansionFlag(expansion))
+                                       .Where(IsInExpansion(expansion))
                                        .ToArray();
 
             return values;
@@ -23,7 +23,7 @@ namespace SpellParser.Infrastructure.Data
         private static Func<EQCasterSpell, bool> HasValidSkill = x => x.Skill != "Instantaneous";
         private static Func<EQCasterSpell, bool> HasValidAttrib1 = x => x.Attrib_1.Contains("Teleport") == false && x.Attrib_1.Contains("Evacuate") == false;
 
-        private static Func<EQCasterSpell, bool> ExpansionFlag(Expansion expansion)
+        private static Func<EQCasterSpell, bool> IsInExpansion(Expansion expansion)
         {
             switch (expansion)
             {
@@ -84,8 +84,10 @@ namespace SpellParser.Infrastructure.Data
             { "O'Keils Radiation", "O`Keils Radiation" },
             { "United Resolve", "Heroic Bond" },
             { "Track Cropse", "Track Corpse" },
-            { "Cantana of Replenishment", "Cantata of Replenishment" },
             { "Selo's Assonait Strane", "Selo's Assonant Strain" },
+            { "Torbas Acid Blast", "Torbas' Acid Blast" },
+            { "Corpal Empathy", "Corporeal Empathy" },
+            { "Improved Invis to Undead", "Improved Invisibility to Undead" },
         };
 
         private static string[] SpellColumns
