@@ -49,7 +49,7 @@ namespace SpellParser.Core.Updater
                 changes.Add(new Change { Name = PEQEffectIdColumnName(effectNumber), OldValue = peqEffectId, NewValue = effectId });
             }
 
-            if ( eqCasterEffectId != "" && eqCasterBaseValue != "" && peqBaseValue != eqCasterBaseValue)
+            if (effectId != EffectType.SE_Stun && eqCasterEffectId != "" && eqCasterBaseValue != "" && peqBaseValue != eqCasterBaseValue)
             {
                 changes.Add(new Change { Name = PEQBaseValueColumnName(effectNumber), OldValue = peqBaseValue, NewValue = eqCasterBaseValue });
             }

@@ -28,7 +28,7 @@ namespace SpellParser.Commmands
             };
 
             var peqSpellUpdaters = PeqSpells.Select(x => SpellUpdater.From(x, updaters)).ToArray();
-            var errors = EqCasterSpells.Select(x => x.Spell_Name.ToLower()).Except(peqSpellUpdaters.Select(x => x.PEQSpell.name.ToLower()));
+            var errors = EqCasterSpells.Select(x => x.Spell_Name.ToLower()).Except(peqSpellUpdaters.Select(x => x.PEQSpell.UpdatedName.ToLower()));
             var errorsCount = errors.Count();
             Logger.LogInformation($"Missing spell names in PEQ <{errorsCount}>");
 

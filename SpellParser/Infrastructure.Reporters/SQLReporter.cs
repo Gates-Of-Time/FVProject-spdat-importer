@@ -53,7 +53,7 @@ WHERE id = {changeTracker.Id};";
         {
             if (columnName == nameof(PEQSpell.name))
             {
-                return $"'{value}'";
+                return $"'{value.Replace("'", "''")}'";
             }
 
             return value;

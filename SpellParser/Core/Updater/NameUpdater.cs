@@ -6,7 +6,7 @@
             { "Instill", "Enstill" },
             { "Wondrous Rapidity", "Wonderous Rapidity" },
             { "Wind of Tashanian", "Wind of Tishanian" },
-            { "Wind of Tashani", "Wind of Tishani" },
+            //{ "Wind of Tashani", "Wind of Tishani" }, // original only
             { "Vocarate: Fire", "Vocerate: Fire" },
             { "Vocarate: Air", "Vocerate: Air" },
             { "Vocarate: Water", "Vocerate: Water" },
@@ -25,6 +25,8 @@
             { "Cantata of Replenishment", "Cantana of Replenishment" },
             { "Cantata of Soothing", "Cantana of Soothing" },
             { "O`Keil's Flickering Flame", "O'Keils Flickering Flame" },
+            { "Nature Walker's Behest", "Nature Walkers Behest" },
+            { "Selo's Assonant Strain", "Selo's Assonant Strane" },
         };
 
         public IEnumerable<Change> UpdateFrom(PEQSpell rof2Spell, EQCasterSpell eqCasterSpell)
@@ -32,7 +34,7 @@
             if (SpellNameChanges.TryGetValue(rof2Spell.name, out var correctSpellName))
             {
                 var change = new Change() { Name = nameof(PEQSpell.name), OldValue = rof2Spell.name, NewValue = correctSpellName };
-                rof2Spell.name = correctSpellName;
+                rof2Spell.UpdatedName = correctSpellName;
                 return new[] { change };
             }
 

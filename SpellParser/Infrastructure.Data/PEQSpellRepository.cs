@@ -11,7 +11,6 @@ namespace SpellParser.Infrastructure.Data
                                         .Select(v => Parse(v))
                                         .Where(s => string.IsNullOrWhiteSpace(s.name) == false)
                                         .Where(IsInExpansion(expansion))
-                                        .Where(s => !options.ExcludeSpellIds.Contains(s.Id))
                                         .ToArray();
             return values;
         }

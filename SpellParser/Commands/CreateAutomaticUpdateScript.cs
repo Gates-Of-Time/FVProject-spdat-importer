@@ -38,11 +38,12 @@ namespace SpellParser.Commmands
                 , new ManaUpdater()
                 , new ResistUpdater()
                 , new RangeUpdater()
+                , new LevelsUpdater()
                 , new EffectsUpdater(SkipUpdateFilter)
                 , new EffectsResetUpdater(SkipUpdateFilter)
             };
 
-            var peqSpellUpdaters = PeqSpells.Select(x => SpellUpdater.From(x, updaters)).ToArray();
+            var peqSpellUpdaters = PeqSpells.Where(s => !ImportOptions.ExcludeSpellIds.Contains(s.Id)).Select(x => SpellUpdater.From(x, updaters)).ToArray();
             var updateSpells = EqCasterSpells
                 .GroupBy(s => s.Spell_Name)
                 .Where(g => g.Count() == 1)
@@ -50,7 +51,7 @@ namespace SpellParser.Commmands
                 .Select(x => new
                     {
                         EQCasterSpell = x,
-                        PEQSpellUpdater = peqSpellUpdaters.Where(y => x.Spell_Name.ToLower() == y.PEQSpell.name.ToLower()).OrderBy(u => u.PEQSpell.id).ToArray()
+                        PEQSpellUpdater = peqSpellUpdaters.Where(y => x.Spell_Name.ToLower() == y.PEQSpell.UpdatedName.ToLower()).OrderBy(u => u.PEQSpell.id).ToArray()
                     }).ToArray();
 
             foreach (var item in updateSpells.Where(x => x.PEQSpellUpdater.Any()))

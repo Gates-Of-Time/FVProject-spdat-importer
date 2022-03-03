@@ -249,24 +249,47 @@
             new SpellEffect() { EffectId = effectid6,  BaseValue = effect_base_value6, MaxValue = max6, LimitValue = effect_limit_value6, Formula = formula6},
             new SpellEffect() { EffectId = effectid7,  BaseValue = effect_base_value7, MaxValue = max7, LimitValue = effect_limit_value7, Formula = formula7},
             new SpellEffect() { EffectId = effectid8,  BaseValue = effect_base_value8, MaxValue = max8, LimitValue = effect_limit_value8, Formula = formula8},
+            new SpellEffect() { EffectId = effectid9,  BaseValue = effect_base_value9, MaxValue = max9, LimitValue = effect_limit_value9, Formula = formula9},
+            new SpellEffect() { EffectId = effectid10,  BaseValue = effect_base_value10, MaxValue = max10, LimitValue = effect_limit_value10, Formula = formula10},
+            new SpellEffect() { EffectId = effectid11,  BaseValue = effect_base_value11, MaxValue = max11, LimitValue = effect_limit_value11, Formula = formula11},
+            new SpellEffect() { EffectId = effectid12,  BaseValue = effect_base_value12, MaxValue = max12, LimitValue = effect_limit_value12, Formula = formula12},
         };
 
         public int Id => Convert.ToInt32(id);
 
-        public string WAR => "";
-        public string CLR => classes1;
-        public string PAL => classes8;
-        public string RNG => classes10;
-        public string SHD => classes9;
-        public string DRU => classes7;
-        public string MNK => "";
-        public string BRD => classes11;
-        public string ROG => "";
-        public string SHM => classes6;
-        public string NEC => classes3;
-        public string WIZ => classes2;
-        public string MAG => classes4;
-        public string ENC => classes5;
+        private string updatedName = "";
+        public string UpdatedName
+        {
+            get
+            {
+                if (updatedName == "") {
+                    return name;
+                }
+
+                return updatedName;
+            }
+
+            set { 
+                updatedName = value;
+            }
+        }
+
+        public string WAR => classes1;
+        public string CLR => classes2;
+        public string PAL => classes3;
+        public string RNG => classes4;
+        public string SHD => classes5;
+        public string DRU => classes6;
+        public string MNK => classes7;
+        public string BRD => classes8;
+        public string ROG => classes9;
+        public string SHM => classes10;
+        public string NEC => classes11;
+        public string WIZ => classes12;
+        public string MAG => classes13;
+        public string ENC => classes14;
+        public string BST => classes15;
+        public string BER => classes16;
 
         public bool IsPCSpell => ToInt(WAR) < 255
             && ToInt(CLR) < 255

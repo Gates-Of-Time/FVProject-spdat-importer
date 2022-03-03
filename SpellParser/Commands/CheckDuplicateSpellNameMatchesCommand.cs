@@ -44,7 +44,7 @@ namespace SpellParser.Commmands
             var updateSpells = EqCasterSpells.Select(x => new
             {
                 EQCasterSpell = x,
-                PEQSpellUpdater = peqSpellUpdaters.Where(y => x.Spell_Name.ToLower() == y.PEQSpell.name.ToLower()).ToArray()
+                PEQSpellUpdater = peqSpellUpdaters.Where(y => x.Spell_Name.ToLower() == y.PEQSpell.UpdatedName.ToLower()).ToArray()
             }).ToArray();
 
             foreach (var item in updateSpells)
