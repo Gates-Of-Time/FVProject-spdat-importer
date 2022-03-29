@@ -3,6 +3,10 @@ using Microsoft.Extensions.Logging;
 using SpellParser.Commmands;
 using SpellParser.Infrastructure.Data;
 using SpellParser.Infrastructure.Reporters;
+using System.Collections;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.Text;
 
 namespace SpellParser
 {
@@ -22,6 +26,9 @@ namespace SpellParser
                             .Build();
 
             var settings = config.GetRequiredSection("Settings").Get<Settings>();
+
+            Deserialize(settings.Import.EQCasterExportFilePath);
+
 
             using var reporter = new MarkdownReporter(settings.Export);
             using var sqlReport = new SQLReporter(settings.Export);
@@ -44,6 +51,67 @@ namespace SpellParser
             {
                 command.Execute();
             }
+        }
+
+        static void Deserialize(string fileName)
+        {
+
+            //if (File.Exists(fileName))
+            //{
+            //    using (var stream = File.Open(fileName, FileMode.Open))
+            //    {
+            //        using (var reader = new BinaryReader(stream, Encoding.UTF8, false))
+            //        {
+            //            var chars = reader.ReadChars(689);
+            //            var charsStr = new string(chars);
+            //        }
+            //    }
+            //}
+
+            if (File.Exists(@"C:\Development\gates-of-time\FVProject-spdat-importer\DataFiles\spdat.2001.08.22.eff"))
+            {
+                using (var stream = File.Open(@"C:\Development\gates-of-time\FVProject-spdat-importer\DataFiles\spdat.2001.08.22.eff", FileMode.Open))
+                {
+                    using (var reader = new BinaryReader(stream, Encoding.UTF8, false))
+                    {
+                        var id = reader.ReadInt32();
+                        var chars = reader.ReadChars(689);
+                        var charsStr = new string(chars);
+                    }
+                }
+            }
+
+            var spells = Deserializestring(@"C:\Development\gates-of-time\FVProject-spdat-importer\DataFiles\spdat.2001.08.22.eff");
+            // To prove that the table deserialized correctly,
+            // display the key/value pairs.
+            foreach (DictionaryEntry de in spells)
+            {
+                Console.WriteLine("{0} lives at {1}.", de.Key, de.Value);
+            }
+        }
+
+        static Hashtable Deserializestring(string fileName)
+        {
+            // Open the file containing the data that you want to deserialize.
+            FileStream fs = new FileStream(fileName, FileMode.Open);
+            try
+            {
+                var formatter = new BinaryFormatter();
+
+                // Deserialize the hashtable from the file and
+                // assign the reference to the local variable.
+                return (Hashtable)formatter.Deserialize(fs);
+            }
+            catch (SerializationException e)
+            {
+                Console.WriteLine("Failed to deserialize. Reason: " + e.Message);
+            }
+            finally
+            {
+                fs.Close();
+            }
+
+            return new Hashtable();
         }
     }
 }
